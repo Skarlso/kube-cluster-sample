@@ -15,6 +15,10 @@ Needs a MongoDB to share information between instances.
 A simple service listening for work to do on a queue. It is possible that multiple instances pick up the same work to do.
 This needs to be addressed.
 
+## Messaging
+
+`nsqlookupd`.
+
 ## Deploying
 
 Using Kubernetes to deploy sample application into various clusters.
