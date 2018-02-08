@@ -6,11 +6,11 @@ A sample Micro-Service cluster for Kubernetes.
 
 A simple service sending something to a message queue.
 
-### Distributed
+### Distributed
 
 Needs a MongoDB to share information between instances.
 
-## Micro-Service Two
+## Micro-Service Two
 
 A simple service listening for work to do on a queue. It is possible that multiple instances pick up the same work to do.
 This needs to be addressed.
