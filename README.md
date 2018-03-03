@@ -2,6 +2,10 @@
 
 A sample Micro-Service cluster for Kubernetes.
 
+## Db
+
+Database is MySQL which can run anywhere but needs to be accessible by all services.
+
 ## Receiver
 
 An REST API which receives images to process. The image path is saved into a db and a message is placed in the queue for the image processor.
