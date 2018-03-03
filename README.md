@@ -2,13 +2,21 @@
 
 A sample Micro-Service cluster for Kubernetes.
 
-## Micro-Service One
+## Receiver
 
-A simple service sending something to a message queue.
+An REST API which receives images to process. The image path is saved into a db and a message is placed in the queue for the image processor.
+
+## Image Processor
+
+The image processor picks up the image ID from the queue and gets the image path from the database.
+
+Identifies the person in question and updates the image record in the db with an affiliated person id.
+
+From here on anything can view the db and see them. Images which don't have a person yet are shown as `pending`, and images who have a person assigned, can link to a profile.
 
 ### Distributed
 
-Needs a MongoDB to share information between instances.
+[BoltDB](https://github.com/coreos/bbolt) will be used to share image information.
 
 ## Micro-Service Two
 
