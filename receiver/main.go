@@ -38,4 +38,25 @@ func main() {
 	i := new(Image)
 	i.loadImage(3)
 	log.Println("loaded image: ", string(i.Path))
+	log.Println("Searching for path: ", string(i.Path))
+	if found, err := i.searchPath(); err != nil {
+		log.Fatal(err)
+	} else {
+		if found {
+			log.Println("found path")
+		} else {
+			log.Println("path not found")
+		}
+	}
+	i.Path = []byte("nope")
+	log.Println("Searching for path: ", string(i.Path))
+	if found, err := i.searchPath(); err != nil {
+		log.Fatal(err)
+	} else {
+		if found {
+			log.Println("found path")
+		} else {
+			log.Println("path not found")
+		}
+	}
 }

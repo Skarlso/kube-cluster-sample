@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/go-sql-driver/mysql"
 )
 
 // DbConnection mysql connection. I'm not going to do pooling here.
@@ -28,6 +28,12 @@ func (dc *DbConnection) setup() error {
 			person int
 		)
 	`)
+	if e, ok := err.(*mysql.MySQLError); ok {
+		if e.Number == 1050 {
+			fmt.Println("table already exists.")
+			return nil
+		}
+	}
 	return err
 }
 
@@ -55,20 +61,57 @@ func (dc *DbConnection) close() error {
 	return errors.New("trying to close a nil connection")
 }
 
+// saveImage saves an image with an incremental id, and sets that ID
+// up for that image after save.
 func (dc *DbConnection) saveImage(i *Image) error {
 	err := dc.open()
 	if err != nil {
 		return err
 	}
+	result, err := dc.Exec("insert into images (path, person) values (?, ?)", i.Path, i.PersonID)
+	if err != nil {
+		return err
+	}
+	id, _ := result.LastInsertId()
+	i.ID = int(id)
 	defer dc.close()
 	return nil
 }
 
-func (dc *DbConnection) loadImage(id int) (*Image, error) {
+// loadImage gets an image from the database.
+func (dc *DbConnection) loadImage(id int) (Image, error) {
 	err := dc.open()
 	if err != nil {
-		return nil, err
+		return Image{}, err
 	}
 	defer dc.close()
-	return &Image{}, nil
+	var (
+		imageID int
+		path    string
+		person  int
+	)
+	err = dc.QueryRow("select id, path, person from images where id = ?", id).Scan(&imageID, &path, &person)
+	if err != nil {
+		return Image{}, err
+	}
+	i := Image{
+		ID:       imageID,
+		Path:     []byte(path),
+		PersonID: person,
+	}
+	return i, nil
+}
+
+func (dc *DbConnection) searchPath(path string) (bool, error) {
+	err := dc.open()
+	if err != nil {
+		return false, err
+	}
+	defer dc.close()
+	row, err := dc.Query("select 1 from images where path = ?", path)
+	if err != nil {
+		return false, err
+	}
+	defer row.Close()
+	return row.Next(), nil
 }

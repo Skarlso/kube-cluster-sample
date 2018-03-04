@@ -2,7 +2,7 @@
 
 A sample Micro-Service cluster for Kubernetes.
 
-## Db
+## Db
 
 Database is MySQL which can run anywhere but needs to be accessible by all services.
 
