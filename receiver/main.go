@@ -1,9 +1,14 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"path/filepath"
+
+	"github.com/gorilla/mux"
 )
 
 func init() {
@@ -13,50 +18,43 @@ func init() {
 	configuration.loadConfiguration(filepath.Dir(ex))
 }
 
-func main() {
-	// log.Println("Starting up microservice one.")
-	// http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-	// 	fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
-	// })
+// Path is a path to an image
+type Path struct {
+	Path string `json:"path"`
+}
 
-	// log.Fatal(http.ListenAndServe(":8080", nil))
-	db := new(DbConnection)
-	err := db.setup()
+// PostImage handles a post of an image. Saves it to the database
+// and sends it to NSQ for further processing.
+func PostImage(w http.ResponseWriter, r *http.Request) {
+	var p Path
+	err := json.NewDecoder(r.Body).Decode(&p)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Fprintf(w, "got error: %s", err)
+		return
 	}
+	fmt.Fprintf(w, "got path: %+v\n", p)
 	image := Image{
 		ID:       -1,
-		Path:     []byte("testpath"),
 		PersonID: -1,
+		Path:     []byte(p.Path),
 	}
 	err = image.saveImage()
+	fmt.Fprintf(w, "image saved with id: %d\n", image.ID)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Fprintf(w, "got error while saving image: %s", err)
+		return
 	}
-	log.Println("saved image with ID: ", image.ID)
-	i := new(Image)
-	i.loadImage(3)
-	log.Println("loaded image: ", string(i.Path))
-	log.Println("Searching for path: ", string(i.Path))
-	if found, err := i.searchPath(); err != nil {
-		log.Fatal(err)
-	} else {
-		if found {
-			log.Println("found path")
-		} else {
-			log.Println("path not found")
-		}
+	nsq := new(NSQ)
+	err = nsq.sendImage(image)
+	if err != nil {
+		fmt.Fprintf(w, "error while sending image to queue: %s", err)
+		return
 	}
-	i.Path = []byte("nope")
-	log.Println("Searching for path: ", string(i.Path))
-	if found, err := i.searchPath(); err != nil {
-		log.Fatal(err)
-	} else {
-		if found {
-			log.Println("found path")
-		} else {
-			log.Println("path not found")
-		}
-	}
+	fmt.Fprintln(w, "image sent to nsq")
+}
+
+func main() {
+	router := mux.NewRouter()
+	router.HandleFunc("/image/post", PostImage).Methods("POST")
+	log.Fatal(http.ListenAndServe(":8000", router))
 }

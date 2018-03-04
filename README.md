@@ -29,7 +29,16 @@ This needs to be addressed.
 
 ## Messaging
 
-`nsqlookupd`.
+`nsqlookupd`
+`nsqd --lookupd-tcp-address=127.0.0.1:4160`
+`nsqadmin --lookupd-http-address=127.0.0.1:4161`
+
+```bash
+curl -d '{"path":"/home/user/image_dump"}' http://127.0.0.1:8000/image/post
+got path: {Path:/home/user/image_dump}
+image saved with id: 23
+image sent to nsq
+```
 
 ## Deploying
 
