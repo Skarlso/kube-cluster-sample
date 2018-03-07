@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/binary"
 	"log"
 
 	nsq "github.com/bitly/go-nsq"
@@ -13,8 +14,9 @@ func consume() {
 	config := nsq.NewConfig()
 	q, _ := nsq.NewConsumer("images", "ch", config)
 	q.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
-		log.Printf("Got a message: %v", string(message.Body))
-		imageQueue = append(imageQueue, 1, 2, 3, 4, 5)
+		data := binary.LittleEndian.Uint64(message.Body)
+		log.Printf("Got a message: %d\n", data)
+		imageQueue = append(imageQueue, int(data))
 		log.Println(imageQueue)
 		c.Signal()
 		// wg.Done()
