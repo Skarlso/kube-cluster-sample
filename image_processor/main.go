@@ -1,17 +1,27 @@
 package main
 
 import (
-	"fmt"
-	"html"
 	"log"
-	"net/http"
+	"os"
+	"path/filepath"
+	"sync"
 )
 
-func main() {
-	log.Println("Starting up microservice two.")
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
-	})
+func init() {
+	log.Println("Initiating configuration...")
+	configuration = new(Configuration)
+	ex, _ := os.Executable()
+	configuration.loadConfiguration(filepath.Dir(ex))
+}
 
-	log.Fatal(http.ListenAndServe(":8081", nil))
+func main() {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+	log.Println("Starting image processing routine...")
+	log.Println("Processor running...")
+
+	log.Println("Starting queue consumer...")
+	go consume()
+	log.Println("Queue consumer started...")
+	wg.Wait()
 }

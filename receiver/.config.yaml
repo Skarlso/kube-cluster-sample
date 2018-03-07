@@ -2,3 +2,5 @@ mysql_connection: "localhost"
 mysql_userpassword: "root:password123"
 mysql_port: 3306
 mysql_dbname: "kube"
+nsq_address: "127.0.0.1"
+producer_address: "127.0.0.1:4150"

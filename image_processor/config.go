@@ -10,12 +10,7 @@ import (
 
 // Configuration represent a db configuration.
 type Configuration struct {
-	MySQLHostname   string `yaml:"mysql_hostname"`
-	MySQLUserPass   string `yaml:"mysql_userpassword"`
-	MySQLPort       int    `yaml:"mysql_port"`
-	MySQLDBName     string `yaml:"mysql_dbname"`
-	NSQAddress      string `yaml:"nsq_address"`
-	ProducerAddress string `yaml:"producer_address"`
+	NSQLookupAddress string `yaml:"nsq_lookup_address"`
 }
 
 var configuration *Configuration
