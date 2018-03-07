@@ -18,10 +18,8 @@ func main() {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 	log.Println("Starting image processing routine...")
-	log.Println("Processor running...")
-
+	go processImages()
 	log.Println("Starting queue consumer...")
 	go consume()
-	log.Println("Queue consumer started...")
 	wg.Wait()
 }
