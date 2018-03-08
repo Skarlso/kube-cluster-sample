@@ -1,0 +1,70 @@
+package main
+
+import (
+	"database/sql"
+	"errors"
+	"fmt"
+
+	_ "github.com/go-sql-driver/mysql"
+)
+
+// DbConnection mysql connection. I'm not going to do pooling here.
+type DbConnection struct {
+	*sql.DB
+}
+
+func (dc *DbConnection) open() error {
+	if dc.DB != nil {
+		return nil
+	}
+	connectionString := fmt.Sprintf("%s@tcp(%s:%d)/%s",
+		configuration.MySQLUserPass,
+		configuration.MySQLHostname,
+		configuration.MySQLPort,
+		configuration.MySQLDBName)
+	db, err := sql.Open("mysql", connectionString)
+	if err != nil {
+		return err
+	}
+	dc.DB = db
+	return db.Ping()
+}
+
+func (dc *DbConnection) close() error {
+	if dc.DB != nil {
+		dc.DB.Close()
+	}
+	return errors.New("trying to close a nil connection")
+}
+
+// loadImage gets an image from the database.
+func (dc *DbConnection) loadImages() ([]Image, error) {
+	images := make([]Image, 0)
+	err := dc.open()
+	if err != nil {
+		return images, err
+	}
+	defer dc.close()
+	rows, err := dc.Query("select id, path, person from images")
+	if err != nil {
+		return images, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var (
+			imageID int
+			path    string
+			person  int
+		)
+		if err := rows.Scan(&imageID, &path, &person); err != nil {
+			return images, err
+		}
+		i := Image{
+			ID:       imageID,
+			Path:     path,
+			PersonID: person,
+		}
+		images = append(images, i)
+	}
+	return images, nil
+}

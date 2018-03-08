@@ -1,0 +1,32 @@
+<html>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+    <body>
+        <h1>{{.PageTitle}}<h1>
+
+        <table class="highlight">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Path</th>
+                    <th>Person</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .Images}}
+                    <tr>
+                    <td>{{.ID}}</td>
+                    <td>{{.Path}}r</td>
+                    <!-- {{if .PersonID eq -1}} -->
+                        <td>{{.PersonID}}</td>
+                    <!-- {{else}} -->
+                        <!-- <td>Identified</td> -->
+                    <!-- {{end}} -->
+                    </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </body>
+</html>
