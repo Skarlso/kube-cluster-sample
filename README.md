@@ -39,3 +39,12 @@ image sent to nsq
 ## Deploying
 
 Using Kubernetes to deploy sample application into various clusters.
+
+## How it looks like on the front-end
+
+| ID | Path                         | Person     |
+|----|------------------------------|------------|
+| 51 | /home/user/image_dump/test33 | Pending... |
+| 52 | /home/user/image_dump/test34 | Hannibal   |
+| 53 | /home/user/image_dump/test35 | John Doe   |
+| 54 | /home/user/image_dump/test36 | Gergely    |

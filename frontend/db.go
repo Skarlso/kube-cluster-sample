@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -44,7 +45,6 @@ func (dc *DbConnection) loadImages() ([]Image, error) {
 	if err != nil {
 		return images, err
 	}
-	defer dc.close()
 	rows, err := dc.Query("select id, path, person from images")
 	if err != nil {
 		return images, err
@@ -57,14 +57,38 @@ func (dc *DbConnection) loadImages() ([]Image, error) {
 			person  int
 		)
 		if err := rows.Scan(&imageID, &path, &person); err != nil {
+			log.Println("fatal while trying to scan rows")
 			return images, err
 		}
+		p := Person{Name: "Pending..."}
+		if person != -1 {
+			p, err = dc.getPerson(person)
+			if err != nil {
+				return images, err
+			}
+		}
 		i := Image{
-			ID:       imageID,
-			Path:     path,
-			PersonID: person,
+			ID:     imageID,
+			Path:   path,
+			Person: p,
 		}
 		images = append(images, i)
 	}
 	return images, nil
+}
+
+func (dc *DbConnection) getPerson(id int) (Person, error) {
+	err := dc.open()
+	if err != nil {
+		return Person{}, err
+	}
+	var name string
+	err = dc.QueryRow("select name from person where id = ?", id).Scan(&name)
+	if err != nil {
+		return Person{}, err
+	}
+	p := Person{
+		Name: name,
+	}
+	return p, nil
 }
