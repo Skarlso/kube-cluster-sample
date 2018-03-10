@@ -18,6 +18,18 @@ Identifies the person in question and updates the image record in the db with an
 
 From here on anything can view the db and see them. Images which don't have a person yet are shown as `pending`, and images who have a person assigned, can link to a profile.
 
+Face recognition now works, thanks to: [Face Recognition](https://github.com/ageitgey/face_recognition).
+
+Running the python script results in:
+
+```bash
+❯ python3 identifier.py unkown.jpg
+Checking image: unkown.jpg
+matched id: 1.jpg
+```
+
+The name of the jpg which contains a known face will be the ID in the database for that person.
+
 ## Micro-Service Two
 
 A simple service listening for work to do on a queue. It is possible that multiple instances pick up the same work to do.
