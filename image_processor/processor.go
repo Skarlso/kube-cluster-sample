@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os/exec"
 	"sync"
 )
 
@@ -24,4 +25,8 @@ func processImages() {
 
 func processImage(i int) {
 	log.Println("Processing image id: ", i)
+	c := exec.Command("identifier.py")
+	if err := c.Run(); err != nil {
+		log.Printf("error while processing image id: %d. error: %+v", i, err)
+	}
 }

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import face_recognition
 import sys
 import os
@@ -24,10 +26,9 @@ def main(path_to_unknown):
         known_encoding = face_recognition.face_encodings(known_image)[0]
         results = face_recognition.compare_faces([known_encoding], unknown_encoding)
         if results:
-            # TODO: Gather the id of the image that it matched from the loop
             print("matched id: %s" % basename(image))
             break
-
+    print("-1")
 
 if __name__ == "__main__":
     main()
