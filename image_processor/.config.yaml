@@ -1,5 +1,0 @@
-nsq_lookup_address: "127.0.0.1:4161"
-mysql_connection: "localhost"
-mysql_userpassword: "root:password123"
-mysql_port: 3306
-mysql_dbname: "kube"

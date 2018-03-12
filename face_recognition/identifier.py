@@ -6,6 +6,7 @@ import os
 import re
 import click
 from os.path import basename
+import grpc
 
 def image_files_in_folder(folder):
     return [os.path.join(folder, f) for f in os.listdir(folder) if re.match(r'.*\.(jpg|jpeg|png)', f, flags=re.I)]
@@ -29,6 +30,7 @@ def main(path_to_unknown):
             print("matched id: %s" % basename(image))
             break
     print("-1")
+
 
 if __name__ == "__main__":
     main()

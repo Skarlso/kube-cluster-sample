@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+message IdentifyRequest {
+    string image_path = 1;
+}
+
+message IdentifyResponse {
+    int32 person_id = 1;
+}
+
+service Identify {
+    rpc Identify(IdentiftRequest) returns (IdentifyResponse) {}
+}

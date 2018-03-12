@@ -3,29 +3,46 @@ package main
 import (
 	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
-
-	"gopkg.in/yaml.v2"
+	"strconv"
+	"strings"
 )
 
 // Configuration represent a db configuration.
 type Configuration struct {
-	MySQLHostname    string `yaml:"mysql_hostname"`
-	MySQLUserPass    string `yaml:"mysql_userpassword"`
-	MySQLPort        int    `yaml:"mysql_port"`
-	MySQLDBName      string `yaml:"mysql_dbname"`
-	NSQLookupAddress string `yaml:"nsq_lookup_address"`
+	MySQLHostname    string
+	MySQLUserPass    string
+	MySQLPort        int
+	MySQLDBName      string
+	NSQLookupAddress string
 }
 
 var configuration *Configuration
 
-func (c *Configuration) loadConfiguration(path string) {
-	data, err := ioutil.ReadFile(filepath.Join(path, ".config.yaml"))
+func (c *Configuration) loadConfiguration() {
+	c.MySQLHostname = os.Getenv("MYSQL_CONNECTION")
+	c.MySQLDBName = os.Getenv("MYSQL_DBNAME")
+	c.MySQLPort, _ = strconv.Atoi(os.Getenv("MYSQL_PORT"))
+	c.MySQLUserPass = os.Getenv("MYSQL_USERPASSWORD")
+	c.NSQLookupAddress = os.Getenv("NSQ_LOOKUP_ADDRESS")
+}
+
+func initiateEnvironment() {
+	ex, _ := os.Executable()
+	path := filepath.Dir(ex)
+	data, err := ioutil.ReadFile(filepath.Join(path, ".env"))
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = yaml.Unmarshal(data, &c)
-	if err != nil {
-		log.Fatal(err)
+	for _, line := range strings.Split(string(data), "\n") {
+		if !strings.Contains(line, "=") {
+			continue
+		}
+		split := strings.Split(line, "=")
+		k, v := split[0], split[1]
+		if _, ok := os.LookupEnv(k); !ok {
+			os.Setenv(k, v)
+		}
 	}
 }
