@@ -1,12 +1,11 @@
 package main
 
 import (
+	"html/template"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
-
-	"github.com/alecthomas/template"
 )
 
 // PageData returns the images that we would like to display.
