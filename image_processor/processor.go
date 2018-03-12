@@ -38,11 +38,13 @@ func processImage(i int) {
 	c := facerecog.NewIdentifyClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := c.IdentifyRequest{
-		ImagePath: db.getPath(i),
-	}
+	path, _ := db.getPath(i)
+	r, err := c.Identify(ctx, &facerecog.IdentifyRequest{
+		ImagePath: path,
+	})
 	if err != nil {
 		log.Fatalf("could not send image: %v", err)
 	}
+	log.Println(r)
 	// TODO: Resposne Perons id will have the Id I have to update the database record with.
 }
