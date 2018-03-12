@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package face_recog;
+package facerecog;
 
 message IdentifyRequest {
     string image_path = 1;

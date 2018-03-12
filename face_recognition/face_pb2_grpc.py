@@ -15,7 +15,7 @@ class IdentifyStub(object):
       channel: A grpc.Channel.
     """
     self.Identify = channel.unary_unary(
-        '/face_recog.Identify/Identify',
+        '/facerecog.Identify/Identify',
         request_serializer=face__pb2.IdentifyRequest.SerializeToString,
         response_deserializer=face__pb2.IdentifyResponse.FromString,
         )
@@ -42,5 +42,5 @@ def add_IdentifyServicer_to_server(servicer, server):
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(
-      'face_recog.Identify', rpc_method_handlers)
+      'facerecog.Identify', rpc_method_handlers)
   server.add_generic_rpc_handlers((generic_handler,))
