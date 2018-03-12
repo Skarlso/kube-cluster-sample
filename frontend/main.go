@@ -4,8 +4,6 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"os"
-	"path/filepath"
 )
 
 // PageData returns the images that we would like to display.
@@ -27,10 +25,11 @@ type Person struct {
 }
 
 func init() {
-	log.Println("Initiating configuration...")
+	log.Println("Initiating environment...")
+	initiateEnvironment()
 	configuration = new(Configuration)
-	ex, _ := os.Executable()
-	configuration.loadConfiguration(filepath.Dir(ex))
+	configuration.loadConfiguration()
+	log.Println(configuration)
 }
 
 func view(w http.ResponseWriter, r *http.Request) {
