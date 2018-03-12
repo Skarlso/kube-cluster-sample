@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Skarlso/kube-cluster-sample/facerecog"
+	"github.com/Skarlso/kube-cluster-sample/image_processor/facerecog"
 	"google.golang.org/grpc"
 )
 
@@ -35,7 +35,7 @@ func processImage(i int) {
 	}
 	defer conn.Close()
 	log.Println("Processing image id: ", i)
-	c := facerecog.NewIdentityClient(conn)
+	c := facerecog.NewIdentifyClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	r, err := c.IdentifyRequest{
