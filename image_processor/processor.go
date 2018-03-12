@@ -1,9 +1,12 @@
 package main
 
 import (
+	"context"
 	"log"
-	"os/exec"
 	"sync"
+	"time"
+
+	"google.golang.org/grpc"
 )
 
 var imageQueue = make([]int, 0)
@@ -24,9 +27,21 @@ func processImages() {
 }
 
 func processImage(i int) {
-	log.Println("Processing image id: ", i)
-	c := exec.Command("identifier.py")
-	if err := c.Run(); err != nil {
-		log.Printf("error while processing image id: %d. error: %+v", i, err)
+	db := DbConnection{}
+	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
 	}
+	defer conn.Close()
+	log.Println("Processing image id: ", i)
+	c := face_recog.NewIdentityClient(conn)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := c.IdentifyRequest{
+		ImagePath: db.getPath(i),
+	}
+	if err != nil {
+		log.Fatalf("could not send image: %v", err)
+	}
+	// TODO: Resposne Perons id will have the Id I have to update the database record with.
 }

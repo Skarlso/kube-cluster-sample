@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package face_recog;
+
+message IdentifyRequest {
+    string image_path = 1;
+}
+
+message IdentifyResponse {
+    int32 person_id = 1;
+}
+
+service Identify {
+    rpc Identify(IdentifyRequest) returns (IdentifyResponse) {}
+}

@@ -2,16 +2,15 @@ package main
 
 import (
 	"log"
-	"os"
-	"path/filepath"
 	"sync"
 )
 
 func init() {
-	log.Println("Initiating configuration...")
+	log.Println("Initiating environment...")
+	initiateEnvironment()
 	configuration = new(Configuration)
-	ex, _ := os.Executable()
-	configuration.loadConfiguration(filepath.Dir(ex))
+	configuration.loadConfiguration()
+	log.Println(configuration)
 }
 
 func main() {
