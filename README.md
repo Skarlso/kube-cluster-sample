@@ -25,10 +25,15 @@ Running the python script results in:
 ```bash
 ❯ python3 identifier.py unkown.jpg
 Checking image: unkown.jpg
-matched id: 1.jpg
+matched id: hannibal_1.jpg
 ```
 
-The name of the jpg which contains a known face will be the ID in the database for that person.
+A person can have many images associated with him/her. The images are saved for a person in the db and linked to it.
+Once the Face Recognition service identifies an image it will send back the name of the image. A joined query produces the name of the person which the front-end displays.
+
+## Face Recognition
+
+Using protobuf and gRPC, the face recognition service talks to the image processor service. This ensures the flexibility of exchanging the face recognition service to whatever implementation is available at any given point in time.
 
 ## Micro-Service Two
 
