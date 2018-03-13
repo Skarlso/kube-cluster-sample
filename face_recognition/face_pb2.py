@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='face.proto',
   package='facerecog',
   syntax='proto3',
-  serialized_pb=_b('\n\nface.proto\x12\tfacerecog\"%\n\x0fIdentifyRequest\x12\x12\n\nimage_path\x18\x01 \x01(\t\"%\n\x10IdentifyResponse\x12\x11\n\tperson_id\x18\x01 \x01(\x05\x32Q\n\x08Identify\x12\x45\n\x08Identify\x12\x1a.facerecog.IdentifyRequest\x1a\x1b.facerecog.IdentifyResponse\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\nface.proto\x12\tfacerecog\"%\n\x0fIdentifyRequest\x12\x12\n\nimage_path\x18\x01 \x01(\t\"&\n\x10IdentifyResponse\x12\x12\n\nimage_name\x18\x01 \x01(\t2Q\n\x08Identify\x12\x45\n\x08Identify\x12\x1a.facerecog.IdentifyRequest\x1a\x1b.facerecog.IdentifyResponse\"\x00\x62\x06proto3')
 )
 
 
@@ -64,9 +64,9 @@ _IDENTIFYRESPONSE = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='person_id', full_name='facerecog.IdentifyResponse.person_id', index=0,
-      number=1, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
+      name='image_name', full_name='facerecog.IdentifyResponse.image_name', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
@@ -83,7 +83,7 @@ _IDENTIFYRESPONSE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=64,
-  serialized_end=101,
+  serialized_end=102,
 )
 
 DESCRIPTOR.message_types_by_name['IdentifyRequest'] = _IDENTIFYREQUEST
@@ -112,8 +112,8 @@ _IDENTIFY = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   options=None,
-  serialized_start=103,
-  serialized_end=184,
+  serialized_start=104,
+  serialized_end=185,
   methods=[
   _descriptor.MethodDescriptor(
     name='Identify',

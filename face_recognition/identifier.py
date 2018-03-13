@@ -16,8 +16,8 @@ class Identifer(face_pb2_grpc.IdentifyServicer):
 
     def Identify(self, request, context):
         path = request.image_path
-        person_id = self.identify(path)
-        return face_pb2.IdentifyResponse(person_id=person_id)
+        image_name = self.identify(path)
+        return face_pb2.IdentifyResponse(image_name = image_name)
 
 
     def image_files_in_folder(self, folder):
@@ -29,6 +29,7 @@ class Identifer(face_pb2_grpc.IdentifyServicer):
         # gather all known people
         # the name of the file is the id of the person
         # compare to all and return if match is found
+        # TODO: Maybe this should also update the table while it's at it...
         images = self.image_files_in_folder('known_people')
         unknown_image = face_recognition.load_image_file(path_to_unknown)
         unknown_encoding = face_recognition.face_encodings(unknown_image)[0]
@@ -37,10 +38,8 @@ class Identifer(face_pb2_grpc.IdentifyServicer):
             known_encoding = face_recognition.face_encodings(known_image)[0]
             results = face_recognition.compare_faces([known_encoding], unknown_encoding)
             if results:
-                base = basename(image)
-                id = os.path.splitext(base)[0]
-                return int(id)
-        return "-1"
+                return basename(image)
+        return "none"
 
 
 def serve():

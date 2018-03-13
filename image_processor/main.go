@@ -5,6 +5,12 @@ import (
 	"sync"
 )
 
+// Person is a person
+type Person struct {
+	ID   int
+	Name string
+}
+
 func init() {
 	log.Println("Initiating environment...")
 	initiateEnvironment()

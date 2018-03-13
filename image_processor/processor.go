@@ -36,7 +36,7 @@ func processImage(i int) {
 	defer conn.Close()
 	log.Println("Processing image id: ", i)
 	c := facerecog.NewIdentifyClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 	path, _ := db.getPath(i)
 	r, err := c.Identify(ctx, &facerecog.IdentifyRequest{
@@ -46,5 +46,15 @@ func processImage(i int) {
 		log.Fatalf("could not send image: %v", err)
 	}
 	log.Println(r)
-	// TODO: Resposne Perons id will have the Id I have to update the database record with.
+	p, err := db.getPersonFromImage(r.GetImageName())
+	if err != nil {
+		log.Fatalf("could not retrieve person: %v", err)
+	}
+	log.Println("got person: ", p.Name)
+	log.Println("updating record with person id")
+	err = db.updateImageWithPerson(p.ID, i)
+	if err != nil {
+		log.Fatalf("could not retrieve person: %v", err)
+	}
+	log.Println("done")
 }

@@ -1,11 +1,10 @@
 package main
 
-// TODO: DB needs to be extracted
-
 import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -47,4 +46,34 @@ func (dc *DbConnection) getPath(id int) (string, error) {
 	var path string
 	err = dc.QueryRow("select path from images where id = ?", id).Scan(&path)
 	return path, err
+}
+
+func (dc *DbConnection) getPersonFromImage(img string) (Person, error) {
+	err := dc.open()
+	if err != nil {
+		return Person{}, err
+	}
+	var (
+		name string
+		id   int
+	)
+	err = dc.QueryRow(`select person.name, person.id from person inner join person_images
+					   as pi on person.id = pi.person_id where image_name = ?`, img).Scan(&name, &id)
+	if err != nil {
+		return Person{}, err
+	}
+	return Person{Name: name, ID: id}, nil
+}
+
+func (dc *DbConnection) updateImageWithPerson(personID, imageID int) error {
+	err := dc.open()
+	if err != nil {
+		return err
+	}
+	res, err := dc.Exec("update images set person = ? where id = ?", personID, imageID)
+	rowCount, _ := res.RowsAffected()
+	if rowCount == 0 {
+		log.Println("warning: no rows were affected")
+	}
+	return err
 }

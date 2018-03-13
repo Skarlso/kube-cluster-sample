@@ -7,7 +7,7 @@ message IdentifyRequest {
 }
 
 message IdentifyResponse {
-    int32 person_id = 1;
+    string image_name = 1;
 }
 
 service Identify {
