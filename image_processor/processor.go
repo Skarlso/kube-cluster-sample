@@ -12,11 +12,6 @@ import (
 
 var imageQueue = make([]int, 0)
 var c = sync.NewCond(&sync.Mutex{})
-
-// var sendTryCount = 0
-// var timeOut = time.Minute
-// var maxTryCount = 5
-// var t time.Time
 var circuitBreaker *CircuitBreaker
 
 func processImages() {
@@ -64,7 +59,7 @@ func processImage(i int) {
 	log.Println("updating record with person id")
 	err = db.updateImageWithPerson(p.ID, i)
 	if err != nil {
-		log.Println("warning: could not update image record: %v", err)
+		log.Printf("warning: could not update image record: %v", err)
 	}
 	log.Println("done")
 }

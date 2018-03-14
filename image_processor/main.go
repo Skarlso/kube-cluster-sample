@@ -16,7 +16,6 @@ func init() {
 	initiateEnvironment()
 	configuration = new(Configuration)
 	configuration.loadConfiguration()
-	log.Println(configuration)
 }
 
 func main() {

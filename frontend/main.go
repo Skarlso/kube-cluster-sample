@@ -29,7 +29,6 @@ func init() {
 	initiateEnvironment()
 	configuration = new(Configuration)
 	configuration.loadConfiguration()
-	log.Println(configuration)
 }
 
 func view(w http.ResponseWriter, r *http.Request) {

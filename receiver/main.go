@@ -5,17 +5,15 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
-	"path/filepath"
 
 	"github.com/gorilla/mux"
 )
 
 func init() {
-	log.Println("Initiating configuration...")
+	log.Println("Initiating environment...")
+	initiateEnvironment()
 	configuration = new(Configuration)
-	ex, _ := os.Executable()
-	configuration.loadConfiguration(filepath.Dir(ex))
+	configuration.loadConfiguration()
 }
 
 // Path is a path to an image
