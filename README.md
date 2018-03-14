@@ -35,6 +35,29 @@ Once the Face Recognition service identifies an image it will send back the name
 
 Using protobuf and gRPC, the face recognition service talks to the image processor service. This ensures the flexibility of exchanging the face recognition service to whatever implementation is available at any given point in time.
 
+## Circuit Breaker
+
+```bash
+2018/03/14 21:03:01 timeout over. opening circuit.
+2018/03/14 21:03:01 could not send image: rpc error: code = Unavailable desc = all SubConns are in TransientFailure, latest connection error: connection error: desc = "transport: Error while dialing dial tcp [::1]:50051: connect: connection refused"
+2018/03/14 21:03:03 Processing image id:  9
+2018/03/14 21:03:03 circuit breaker try count:  1
+2018/03/14 21:03:03 could not send image: rpc error: code = Unavailable desc = all SubConns are in TransientFailure, latest connection error: connection error: desc = "transport: Error while dialing dial tcp [::1]:50051: connect: connection refused"
+2018/03/14 21:03:05 Processing image id:  10
+2018/03/14 21:03:05 circuit breaker try count:  2
+2018/03/14 21:03:05 could not send image: rpc error: code = Unavailable desc = all SubConns are in TransientFailure, latest connection error: connection error: desc = "transport: Error while dialing dial tcp [::1]:50051: connect: connection refused"
+2018/03/14 21:03:05 maximum try of 3 sends reached. disabling for 10s time period.
+2018/03/14 21:03:07 Processing image id:  11
+2018/03/14 21:03:07 circuit breaker try count:  3
+2018/03/14 21:03:07 max sending try count of 3 reached. sending not allowed for 7.998267708s time period.
+2018/03/14 21:03:09 Processing image id:  12
+2018/03/14 21:03:09 circuit breaker try count:  3
+2018/03/14 21:03:09 max sending try count of 3 reached. sending not allowed for 5.995015753s time period.
+2018/03/14 21:03:11 Processing image id:  13
+2018/03/14 21:03:11 circuit breaker try count:  3
+2018/03/14 21:03:11 max sending try count of 3 reached. sending not allowed for 3.994391825s time period.
+```
+
 ## Micro-Service Two
 
 A simple service listening for work to do on a queue. It is possible that multiple instances pick up the same work to do.

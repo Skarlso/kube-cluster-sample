@@ -12,10 +12,12 @@ import (
 
 var imageQueue = make([]int, 0)
 var c = sync.NewCond(&sync.Mutex{})
-var sendTryCount = 0
-var timeOut = time.Minute
-var maxTryCount = 5
-var t time.Time
+
+// var sendTryCount = 0
+// var timeOut = time.Minute
+// var maxTryCount = 5
+// var t time.Time
+var circuitBreaker *CircuitBreaker
 
 func processImages() {
 	for {
@@ -23,6 +25,7 @@ func processImages() {
 		for len(imageQueue) == 0 {
 			c.Wait()
 		}
+		circuitBreaker = NewCircuitBreaker()
 		for len(imageQueue) > 0 {
 			processImage(imageQueue[0])
 			imageQueue = imageQueue[1:]
@@ -42,28 +45,15 @@ func processImage(i int) {
 	c := facerecog.NewIdentifyClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
-
-	if t.Add(timeOut).Before(time.Now()) {
-		log.Printf("timeout over. allowing sending of images again.")
-		sendTryCount = 0
+	circuitBreaker.F = func() (*facerecog.IdentifyResponse, error) {
+		path, _ := db.getPath(i)
+		r, err := c.Identify(ctx, &facerecog.IdentifyRequest{
+			ImagePath: path,
+		})
+		return r, err
 	}
-	if sendTryCount >= maxTryCount {
-		log.Printf("max sending try count of %d reached. sending not allowed for %v time period.", maxTryCount, timeOut)
-		return
-	}
-
-	path, _ := db.getPath(i)
-	r, err := c.Identify(ctx, &facerecog.IdentifyRequest{
-		ImagePath: path,
-	})
-
+	r, err := circuitBreaker.Call()
 	if err != nil {
-		log.Printf("could not send image: %v", err)
-		sendTryCount++
-		if sendTryCount >= maxTryCount {
-			log.Printf("maximum try of %d sends reached. disabling for %v time period.", maxTryCount, timeOut)
-			t = time.Now()
-		}
 		return
 	}
 	p, err := db.getPersonFromImage(r.GetImageName())
@@ -74,7 +64,7 @@ func processImage(i int) {
 	log.Println("updating record with person id")
 	err = db.updateImageWithPerson(p.ID, i)
 	if err != nil {
-		log.Fatalf("could not update image record: %v", err)
+		log.Println("warning: could not update image record: %v", err)
 	}
 	log.Println("done")
 }
