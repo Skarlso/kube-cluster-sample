@@ -44,7 +44,7 @@ func (dc *DbConnection) getPath(id int) (string, error) {
 		return "", err
 	}
 	var path string
-	err = dc.QueryRow("select path from images where id = ?", id).Scan(&path)
+	err = dc.QueryRow("select path from images where id = ? and status = ?", id, PENDING).Scan(&path)
 	return path, err
 }
 
@@ -70,7 +70,20 @@ func (dc *DbConnection) updateImageWithPerson(personID, imageID int) error {
 	if err != nil {
 		return err
 	}
-	res, err := dc.Exec("update images set person = ? where id = ?", personID, imageID)
+	res, err := dc.Exec("update images set person = ?, status = ? where id = ?", personID, PROCESSED, imageID)
+	rowCount, _ := res.RowsAffected()
+	if rowCount == 0 {
+		log.Println("warning: no rows were affected")
+	}
+	return err
+}
+
+func (dc *DbConnection) updateImageWithFailedStatus(imageID int) error {
+	err := dc.open()
+	if err != nil {
+		return err
+	}
+	res, err := dc.Exec("update images set status = ? where id = ?", FAILEDPROCESSING, imageID)
 	rowCount, _ := res.RowsAffected()
 	if rowCount == 0 {
 		log.Println("warning: no rows were affected")

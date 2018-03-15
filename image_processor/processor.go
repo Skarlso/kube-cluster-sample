@@ -41,8 +41,12 @@ func processImage(i int) {
 	h := facerecog.NewHealthCheckClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
+	path, err := db.getPath(i)
+	if err != nil {
+		log.Printf("error while getting path for image id: %d", i)
+		return
+	}
 	circuitBreaker.F = func() (*facerecog.IdentifyResponse, error) {
-		path, _ := db.getPath(i)
 		r, err := c.Identify(ctx, &facerecog.IdentifyRequest{
 			ImagePath: path,
 		})
@@ -57,6 +61,10 @@ func processImage(i int) {
 	}
 	r, err := circuitBreaker.Call()
 	if err != nil {
+		dbErr := db.updateImageWithFailedStatus(i)
+		if dbErr != nil {
+			log.Printf("could not update image to failed status: %v", dbErr)
+		}
 		return
 	}
 	p, err := db.getPersonFromImage(r.GetImageName())

@@ -45,7 +45,7 @@ func (dc *DbConnection) loadImages() ([]Image, error) {
 	if err != nil {
 		return images, err
 	}
-	rows, err := dc.Query("select id, path, person from images")
+	rows, err := dc.Query("select id, path, person, status from images")
 	if err != nil {
 		return images, err
 	}
@@ -55,8 +55,9 @@ func (dc *DbConnection) loadImages() ([]Image, error) {
 			imageID int
 			path    string
 			person  int
+			status  int
 		)
-		if err := rows.Scan(&imageID, &path, &person); err != nil {
+		if err := rows.Scan(&imageID, &path, &person, &status); err != nil {
 			log.Println("fatal while trying to scan rows")
 			return images, err
 		}
@@ -71,6 +72,7 @@ func (dc *DbConnection) loadImages() ([]Image, error) {
 			ID:     imageID,
 			Path:   path,
 			Person: p,
+			Status: Status(status),
 		}
 		images = append(images, i)
 	}

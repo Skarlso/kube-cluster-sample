@@ -31,6 +31,21 @@ matched id: hannibal_1.jpg
 A person can have many images associated with him/her. The images are saved for a person in the db and linked to it.
 Once the Face Recognition service identifies an image it will send back the name of the image. A joined query produces the name of the person which the front-end displays.
 
+Images have a `status` field. The field simply takes care of tracking the state of an image which can be these three ATM:
+
+```go
+const (
+    // PENDING -- not yet send to face recognition service
+    PENDING Status = iota
+    // PROCESSED -- processed by face recognition service; even if no person was found for the image
+    PROCESSED
+    // FAILEDPROCESSING -- for whatever reason the processing failed and this image is flagged for a retry
+    FAILEDPROCESSING
+)
+```
+
+If an image is failed processing those can be later reconciled / retried, by a cron job for example, scavenging for images which failed processing.
+
 ## Face Recognition
 
 Using protobuf and gRPC, the face recognition service talks to the image processor service. This ensures the flexibility of exchanging the face recognition service to whatever implementation is available at any given point in time.
@@ -88,9 +103,10 @@ Using Kubernetes to deploy sample application into various clusters.
 
 ## How it looks like on the front-end
 
-| ID | Path                         | Person     |
-|----|------------------------------|------------|
-| 51 | /home/user/image_dump/test33 | Pending... |
-| 52 | /home/user/image_dump/test34 | Hannibal   |
-| 53 | /home/user/image_dump/test35 | John Doe   |
-| 54 | /home/user/image_dump/test36 | Gergely    |
+| ID | Path                         | Person     | Status |
+|----|------------------------------|------------|--------|
+| 51 | /home/user/image_dump/test33 | Pending... | 0      |
+| 52 | /home/user/image_dump/test34 | Hannibal   | 1      |
+| 53 | /home/user/image_dump/test35 | John Doe   | 1      |
+| 54 | /home/user/image_dump/test36 | Gergely    | 1      |
+| 55 | /home/user/image_dump/test37 | Pending... | 2      |

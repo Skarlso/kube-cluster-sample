@@ -25,7 +25,8 @@ func (dc *DbConnection) setup() error {
 		create table images(
 			id int not null auto_increment primary key,
 			path varchar(255) not null,
-			person int
+			person int,
+			status int
 		)
 	`)
 	if e, ok := err.(*mysql.MySQLError); ok {
@@ -68,7 +69,7 @@ func (dc *DbConnection) saveImage(i *Image) error {
 	if err != nil {
 		return err
 	}
-	result, err := dc.Exec("insert into images (path, person) values (?, ?)", i.Path, i.PersonID)
+	result, err := dc.Exec("insert into images (path, person, status) values (?, ?, ?)", i.Path, i.PersonID, i.Status)
 	if err != nil {
 		return err
 	}
@@ -89,8 +90,9 @@ func (dc *DbConnection) loadImage(id int) (Image, error) {
 		imageID int
 		path    string
 		person  int
+		status  int
 	)
-	err = dc.QueryRow("select id, path, person from images where id = ?", id).Scan(&imageID, &path, &person)
+	err = dc.QueryRow("select id, path, person, status from images where id = ?", id).Scan(&imageID, &path, &person, status)
 	if err != nil {
 		return Image{}, err
 	}
@@ -98,6 +100,7 @@ func (dc *DbConnection) loadImage(id int) (Image, error) {
 		ID:       imageID,
 		Path:     []byte(path),
 		PersonID: person,
+		Status:   Status(status),
 	}
 	return i, nil
 }

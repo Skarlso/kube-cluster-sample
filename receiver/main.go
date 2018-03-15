@@ -35,6 +35,7 @@ func PostImage(w http.ResponseWriter, r *http.Request) {
 		ID:       -1,
 		PersonID: -1,
 		Path:     []byte(p.Path),
+		Status:   PENDING,
 	}
 	err = image.saveImage()
 	fmt.Fprintf(w, "image saved with id: %d\n", image.ID)

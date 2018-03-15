@@ -22,15 +22,17 @@
 
     <table>
         <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Points</th>
+            <th>ID</th>
+            <th>Path</th>
+            <th>Person</th>
+            <th>Status</th>
         </tr>
         {{range .Images}}
             <tr>
                 <td>{{.ID}}</td>
                 <td>{{.Path}}</td>
                 <td>{{.Person.Name}}</td>
+                <td>{{.Status}}</td>
             </tr>
         {{end}}
     </table>
