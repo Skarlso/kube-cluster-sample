@@ -10,6 +10,8 @@ It is generated from these files:
 It has these top-level messages:
 	IdentifyRequest
 	IdentifyResponse
+	HealthCheckResponse
+	Empty
 */
 package facerecog
 
@@ -65,9 +67,35 @@ func (m *IdentifyResponse) GetImageName() string {
 	return ""
 }
 
+type HealthCheckResponse struct {
+	Ready bool `protobuf:"varint,1,opt,name=ready" json:"ready,omitempty"`
+}
+
+func (m *HealthCheckResponse) Reset()                    { *m = HealthCheckResponse{} }
+func (m *HealthCheckResponse) String() string            { return proto.CompactTextString(m) }
+func (*HealthCheckResponse) ProtoMessage()               {}
+func (*HealthCheckResponse) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
+
+func (m *HealthCheckResponse) GetReady() bool {
+	if m != nil {
+		return m.Ready
+	}
+	return false
+}
+
+type Empty struct {
+}
+
+func (m *Empty) Reset()                    { *m = Empty{} }
+func (m *Empty) String() string            { return proto.CompactTextString(m) }
+func (*Empty) ProtoMessage()               {}
+func (*Empty) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3} }
+
 func init() {
 	proto.RegisterType((*IdentifyRequest)(nil), "facerecog.IdentifyRequest")
 	proto.RegisterType((*IdentifyResponse)(nil), "facerecog.IdentifyResponse")
+	proto.RegisterType((*HealthCheckResponse)(nil), "facerecog.HealthCheckResponse")
+	proto.RegisterType((*Empty)(nil), "facerecog.Empty")
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -142,18 +170,86 @@ var _Identify_serviceDesc = grpc.ServiceDesc{
 	Metadata: "face.proto",
 }
 
+// Client API for HealthCheck service
+
+type HealthCheckClient interface {
+	HealthCheck(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*HealthCheckResponse, error)
+}
+
+type healthCheckClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewHealthCheckClient(cc *grpc.ClientConn) HealthCheckClient {
+	return &healthCheckClient{cc}
+}
+
+func (c *healthCheckClient) HealthCheck(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*HealthCheckResponse, error) {
+	out := new(HealthCheckResponse)
+	err := grpc.Invoke(ctx, "/facerecog.HealthCheck/HealthCheck", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Server API for HealthCheck service
+
+type HealthCheckServer interface {
+	HealthCheck(context.Context, *Empty) (*HealthCheckResponse, error)
+}
+
+func RegisterHealthCheckServer(s *grpc.Server, srv HealthCheckServer) {
+	s.RegisterService(&_HealthCheck_serviceDesc, srv)
+}
+
+func _HealthCheck_HealthCheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HealthCheckServer).HealthCheck(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/facerecog.HealthCheck/HealthCheck",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HealthCheckServer).HealthCheck(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _HealthCheck_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "facerecog.HealthCheck",
+	HandlerType: (*HealthCheckServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "HealthCheck",
+			Handler:    _HealthCheck_HealthCheck_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "face.proto",
+}
+
 func init() { proto.RegisterFile("face.proto", fileDescriptor0) }
 
 var fileDescriptor0 = []byte{
-	// 147 bytes of a gzipped FileDescriptorProto
+	// 211 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x4a, 0x4b, 0x4c, 0x4e,
 	0xd5, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x04, 0xb1, 0x8b, 0x52, 0x93, 0xf3, 0xd3, 0x95,
 	0x0c, 0xb8, 0xf8, 0x3d, 0x53, 0x52, 0xf3, 0x4a, 0x32, 0xd3, 0x2a, 0x83, 0x52, 0x0b, 0x4b, 0x53,
 	0x8b, 0x4b, 0x84, 0x64, 0xb9, 0xb8, 0x32, 0x73, 0x13, 0xd3, 0x53, 0xe3, 0x0b, 0x12, 0x4b, 0x32,
 	0x24, 0x18, 0x15, 0x18, 0x35, 0x38, 0x83, 0x38, 0xc1, 0x22, 0x01, 0x89, 0x25, 0x19, 0x4a, 0x86,
 	0x5c, 0x02, 0x08, 0x1d, 0xc5, 0x05, 0xf9, 0x79, 0xc5, 0xa9, 0x08, 0x2d, 0x79, 0x89, 0xb9, 0xa9,
-	0x28, 0x5a, 0xfc, 0x12, 0x73, 0x53, 0x8d, 0x02, 0xb9, 0x38, 0x60, 0x5a, 0x84, 0x5c, 0x91, 0xd8,
-	0x52, 0x7a, 0x70, 0x87, 0xe8, 0xa1, 0xb9, 0x42, 0x4a, 0x1a, 0xab, 0x1c, 0xc4, 0x3e, 0x25, 0x86,
-	0x24, 0x36, 0xb0, 0x4f, 0x8c, 0x01, 0x01, 0x00, 0x00, 0xff, 0xff, 0x62, 0xa8, 0xa2, 0xdb, 0xd7,
-	0x00, 0x00, 0x00,
+	0x28, 0x5a, 0xfc, 0x12, 0x73, 0x53, 0x95, 0xb4, 0xb9, 0x84, 0x3d, 0x52, 0x13, 0x73, 0x4a, 0x32,
+	0x9c, 0x33, 0x52, 0x93, 0xb3, 0xe1, 0xba, 0x44, 0xb8, 0x58, 0x8b, 0x52, 0x13, 0x53, 0x2a, 0xc1,
+	0x1a, 0x38, 0x82, 0x20, 0x1c, 0x25, 0x76, 0x2e, 0x56, 0xd7, 0xdc, 0x82, 0x92, 0x4a, 0xa3, 0x40,
+	0x2e, 0x0e, 0x98, 0x45, 0x42, 0xae, 0x48, 0x6c, 0x29, 0x3d, 0xb8, 0xf3, 0xf5, 0xd0, 0xdc, 0x2e,
+	0x25, 0x8d, 0x55, 0x0e, 0x62, 0x9f, 0x12, 0x83, 0x51, 0x00, 0x17, 0x37, 0x92, 0x43, 0x84, 0x1c,
+	0x51, 0xb9, 0x02, 0x48, 0x9a, 0xc1, 0x4e, 0x90, 0x92, 0x43, 0x12, 0xc1, 0xe2, 0x03, 0x25, 0x86,
+	0x24, 0x36, 0x70, 0x88, 0x1a, 0x03, 0x02, 0x00, 0x00, 0xff, 0xff, 0x85, 0x20, 0x98, 0x0c, 0x5f,
+	0x01, 0x00, 0x00,
 }

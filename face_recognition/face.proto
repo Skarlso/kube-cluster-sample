@@ -10,6 +10,17 @@ message IdentifyResponse {
     string image_name = 1;
 }
 
+message HealthCheckResponse {
+    bool ready = 1;
+}
+
+message Empty {
+}
+
 service Identify {
     rpc Identify(IdentifyRequest) returns (IdentifyResponse) {}
+}
+
+service HealthCheck {
+    rpc HealthCheck(Empty) returns (HealthCheckResponse) {}
 }

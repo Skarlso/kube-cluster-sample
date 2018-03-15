@@ -37,8 +37,19 @@ Using protobuf and gRPC, the face recognition service talks to the image process
 
 ## Circuit Breaker
 
+The circuit breaker is a rudimentary circuit health check device. If it receives a pre-configured number of failed attempts at calling the back-end face recognition service, it will break the circuit for a period of time. After that period elapses it will re-try with a `Ping` to see if the service is at health. If the ping comes back as green, it opens the flow again.
+
+Ping:
+
 ```bash
-2018/03/14 21:03:01 timeout over. opening circuit.
+2018/03/15 11:04:36 timeout over. running ping.
+2018/03/15 11:04:36 backend still not functioning. extending break.
+2018/03/15 11:04:36 max sending try count of 3 reached. sending not allowed for 9.999999735s time period.
+```
+
+Normal run:
+
+```bash
 2018/03/14 21:03:01 could not send image: rpc error: code = Unavailable desc = all SubConns are in TransientFailure, latest connection error: connection error: desc = "transport: Error while dialing dial tcp [::1]:50051: connect: connection refused"
 2018/03/14 21:03:03 Processing image id:  9
 2018/03/14 21:03:03 circuit breaker try count:  1
@@ -57,11 +68,6 @@ Using protobuf and gRPC, the face recognition service talks to the image process
 2018/03/14 21:03:11 circuit breaker try count:  3
 2018/03/14 21:03:11 max sending try count of 3 reached. sending not allowed for 3.994391825s time period.
 ```
-
-## Micro-Service Two
-
-A simple service listening for work to do on a queue. It is possible that multiple instances pick up the same work to do.
-This needs to be addressed.
 
 ## Messaging
 

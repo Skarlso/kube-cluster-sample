@@ -17,7 +17,6 @@ func consume() {
 		data := binary.LittleEndian.Uint64(message.Body)
 		log.Printf("Got a message: %d\n", data)
 		imageQueue = append(imageQueue, int(data))
-		log.Println(imageQueue)
 		c.Signal()
 		// wg.Done()
 		return nil

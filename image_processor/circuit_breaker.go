@@ -27,6 +27,7 @@ type CircuitBreaker struct {
 	CurrentTries     int
 	MaxTries         int
 	F                func() (*facerecog.IdentifyResponse, error)
+	Ping             func() bool
 }
 
 func (c *CircuitBreaker) engage() {
@@ -41,7 +42,12 @@ func (c *CircuitBreaker) disengage() {
 
 func (c *CircuitBreaker) checkIfOver() {
 	if c.CurrentBreakTime.Add(c.TimeOut).Before(time.Now()) {
-		log.Printf("timeout over. opening circuit.")
+		log.Printf("timeout over. running ping.")
+		if !c.Ping() {
+			log.Println("backend still not functioning. extending break.")
+			c.engage()
+			return
+		}
 		c.disengage()
 	}
 }

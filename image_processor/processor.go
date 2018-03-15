@@ -38,6 +38,7 @@ func processImage(i int) {
 	defer conn.Close()
 	log.Println("Processing image id: ", i)
 	c := facerecog.NewIdentifyClient(conn)
+	h := facerecog.NewHealthCheckClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 	circuitBreaker.F = func() (*facerecog.IdentifyResponse, error) {
@@ -47,13 +48,21 @@ func processImage(i int) {
 		})
 		return r, err
 	}
+	circuitBreaker.Ping = func() bool {
+		_, err := h.HealthCheck(ctx, &facerecog.Empty{})
+		if err != nil {
+			return false
+		}
+		return true
+	}
 	r, err := circuitBreaker.Call()
 	if err != nil {
 		return
 	}
 	p, err := db.getPersonFromImage(r.GetImageName())
 	if err != nil {
-		log.Fatalf("could not retrieve person: %v", err)
+		log.Printf("warning: could not retrieve person: %v", err)
+		return
 	}
 	log.Println("got person: ", p.Name)
 	log.Println("updating record with person id")

@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='face.proto',
   package='facerecog',
   syntax='proto3',
-  serialized_pb=_b('\n\nface.proto\x12\tfacerecog\"%\n\x0fIdentifyRequest\x12\x12\n\nimage_path\x18\x01 \x01(\t\"&\n\x10IdentifyResponse\x12\x12\n\nimage_name\x18\x01 \x01(\t2Q\n\x08Identify\x12\x45\n\x08Identify\x12\x1a.facerecog.IdentifyRequest\x1a\x1b.facerecog.IdentifyResponse\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\nface.proto\x12\tfacerecog\"%\n\x0fIdentifyRequest\x12\x12\n\nimage_path\x18\x01 \x01(\t\"&\n\x10IdentifyResponse\x12\x12\n\nimage_name\x18\x01 \x01(\t\"$\n\x13HealthCheckResponse\x12\r\n\x05ready\x18\x01 \x01(\x08\"\x07\n\x05\x45mpty2Q\n\x08Identify\x12\x45\n\x08Identify\x12\x1a.facerecog.IdentifyRequest\x1a\x1b.facerecog.IdentifyResponse\"\x00\x32P\n\x0bHealthCheck\x12\x41\n\x0bHealthCheck\x12\x10.facerecog.Empty\x1a\x1e.facerecog.HealthCheckResponse\"\x00\x62\x06proto3')
 )
 
 
@@ -86,8 +86,65 @@ _IDENTIFYRESPONSE = _descriptor.Descriptor(
   serialized_end=102,
 )
 
+
+_HEALTHCHECKRESPONSE = _descriptor.Descriptor(
+  name='HealthCheckResponse',
+  full_name='facerecog.HealthCheckResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='ready', full_name='facerecog.HealthCheckResponse.ready', index=0,
+      number=1, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=104,
+  serialized_end=140,
+)
+
+
+_EMPTY = _descriptor.Descriptor(
+  name='Empty',
+  full_name='facerecog.Empty',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=142,
+  serialized_end=149,
+)
+
 DESCRIPTOR.message_types_by_name['IdentifyRequest'] = _IDENTIFYREQUEST
 DESCRIPTOR.message_types_by_name['IdentifyResponse'] = _IDENTIFYRESPONSE
+DESCRIPTOR.message_types_by_name['HealthCheckResponse'] = _HEALTHCHECKRESPONSE
+DESCRIPTOR.message_types_by_name['Empty'] = _EMPTY
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 IdentifyRequest = _reflection.GeneratedProtocolMessageType('IdentifyRequest', (_message.Message,), dict(
@@ -104,6 +161,20 @@ IdentifyResponse = _reflection.GeneratedProtocolMessageType('IdentifyResponse', 
   ))
 _sym_db.RegisterMessage(IdentifyResponse)
 
+HealthCheckResponse = _reflection.GeneratedProtocolMessageType('HealthCheckResponse', (_message.Message,), dict(
+  DESCRIPTOR = _HEALTHCHECKRESPONSE,
+  __module__ = 'face_pb2'
+  # @@protoc_insertion_point(class_scope:facerecog.HealthCheckResponse)
+  ))
+_sym_db.RegisterMessage(HealthCheckResponse)
+
+Empty = _reflection.GeneratedProtocolMessageType('Empty', (_message.Message,), dict(
+  DESCRIPTOR = _EMPTY,
+  __module__ = 'face_pb2'
+  # @@protoc_insertion_point(class_scope:facerecog.Empty)
+  ))
+_sym_db.RegisterMessage(Empty)
+
 
 
 _IDENTIFY = _descriptor.ServiceDescriptor(
@@ -112,8 +183,8 @@ _IDENTIFY = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   options=None,
-  serialized_start=104,
-  serialized_end=185,
+  serialized_start=151,
+  serialized_end=232,
   methods=[
   _descriptor.MethodDescriptor(
     name='Identify',
@@ -128,5 +199,29 @@ _IDENTIFY = _descriptor.ServiceDescriptor(
 _sym_db.RegisterServiceDescriptor(_IDENTIFY)
 
 DESCRIPTOR.services_by_name['Identify'] = _IDENTIFY
+
+
+_HEALTHCHECK = _descriptor.ServiceDescriptor(
+  name='HealthCheck',
+  full_name='facerecog.HealthCheck',
+  file=DESCRIPTOR,
+  index=1,
+  options=None,
+  serialized_start=234,
+  serialized_end=314,
+  methods=[
+  _descriptor.MethodDescriptor(
+    name='HealthCheck',
+    full_name='facerecog.HealthCheck.HealthCheck',
+    index=0,
+    containing_service=None,
+    input_type=_EMPTY,
+    output_type=_HEALTHCHECKRESPONSE,
+    options=None,
+  ),
+])
+_sym_db.RegisterServiceDescriptor(_HEALTHCHECK)
+
+DESCRIPTOR.services_by_name['HealthCheck'] = _HEALTHCHECK
 
 # @@protoc_insertion_point(module_scope)

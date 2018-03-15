@@ -25,11 +25,9 @@ class Identifer(face_pb2_grpc.IdentifyServicer):
 
 
     def identify(self, path_to_unknown):
+        if len(path_to_unknown) < 1:
+            return "none"
         print("Checking image: %s" % path_to_unknown)
-        # gather all known people
-        # the name of the file is the id of the person
-        # compare to all and return if match is found
-        # TODO: Maybe this should also update the table while it's at it...
         images = self.image_files_in_folder('known_people')
         unknown_image = face_recognition.load_image_file(path_to_unknown)
         unknown_encoding = face_recognition.face_encodings(unknown_image)[0]
@@ -42,9 +40,15 @@ class Identifer(face_pb2_grpc.IdentifyServicer):
         return "none"
 
 
+class HealthChecker(face_pb2_grpc.HealthCheckServicer):
+    def HealthCheck(self, request, context):
+        return face_pb2.HealthCheckResponse(ready=True)
+
+
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     face_pb2_grpc.add_IdentifyServicer_to_server(Identifer(), server)
+    face_pb2_grpc.add_HealthCheckServicer_to_server(HealthChecker(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
     try:

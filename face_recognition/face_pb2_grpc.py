@@ -44,3 +44,45 @@ def add_IdentifyServicer_to_server(servicer, server):
   generic_handler = grpc.method_handlers_generic_handler(
       'facerecog.Identify', rpc_method_handlers)
   server.add_generic_rpc_handlers((generic_handler,))
+
+
+class HealthCheckStub(object):
+  # missing associated documentation comment in .proto file
+  pass
+
+  def __init__(self, channel):
+    """Constructor.
+
+    Args:
+      channel: A grpc.Channel.
+    """
+    self.HealthCheck = channel.unary_unary(
+        '/facerecog.HealthCheck/HealthCheck',
+        request_serializer=face__pb2.Empty.SerializeToString,
+        response_deserializer=face__pb2.HealthCheckResponse.FromString,
+        )
+
+
+class HealthCheckServicer(object):
+  # missing associated documentation comment in .proto file
+  pass
+
+  def HealthCheck(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+
+def add_HealthCheckServicer_to_server(servicer, server):
+  rpc_method_handlers = {
+      'HealthCheck': grpc.unary_unary_rpc_method_handler(
+          servicer.HealthCheck,
+          request_deserializer=face__pb2.Empty.FromString,
+          response_serializer=face__pb2.HealthCheckResponse.SerializeToString,
+      ),
+  }
+  generic_handler = grpc.method_handlers_generic_handler(
+      'facerecog.HealthCheck', rpc_method_handlers)
+  server.add_generic_rpc_handlers((generic_handler,))
