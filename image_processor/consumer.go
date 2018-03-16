@@ -16,7 +16,7 @@ func consume() {
 	q.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
 		data := binary.LittleEndian.Uint64(message.Body)
 		log.Printf("Got a message: %d\n", data)
-		imageQueue = append(imageQueue, int(data))
+		imageQueue.add(int(data))
 		c.Signal()
 		// wg.Done()
 		return nil

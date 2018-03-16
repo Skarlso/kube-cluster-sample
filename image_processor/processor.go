@@ -10,20 +10,39 @@ import (
 	"google.golang.org/grpc"
 )
 
-var imageQueue = make([]int, 0)
+// ImageQueue is a thread safe slice of image IDs.
+type ImageQueue struct {
+	imageQueue []int
+	sync.RWMutex
+}
+
+func (i *ImageQueue) add(image int) {
+	i.Lock()
+	defer i.Unlock()
+	i.imageQueue = append(i.imageQueue, image)
+}
+
+func (i *ImageQueue) drain() int {
+	i.Lock()
+	defer i.Unlock()
+	ret := i.imageQueue[0]
+	i.imageQueue = i.imageQueue[1:]
+	return ret
+}
+
+var imageQueue = &ImageQueue{imageQueue: make([]int, 0)}
 var c = sync.NewCond(&sync.Mutex{})
 var circuitBreaker *CircuitBreaker
 
 func processImages() {
 	for {
 		c.L.Lock()
-		for len(imageQueue) == 0 {
+		for len(imageQueue.imageQueue) == 0 {
 			c.Wait()
 		}
 		circuitBreaker = NewCircuitBreaker()
-		for len(imageQueue) > 0 {
-			processImage(imageQueue[0])
-			imageQueue = imageQueue[1:]
+		for len(imageQueue.imageQueue) > 0 {
+			processImage(imageQueue.drain())
 		}
 		c.L.Unlock()
 	}
