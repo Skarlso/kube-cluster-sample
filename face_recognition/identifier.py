@@ -28,7 +28,9 @@ class Identifer(face_pb2_grpc.IdentifyServicer):
         if len(path_to_unknown) < 1:
             return "none"
         print("Checking image: %s" % path_to_unknown)
-        images = self.image_files_in_folder('known_people')
+        known_people = os.getenv('KNOWN_PEOPLE', 'known_people')
+        print("Known people images location is: %s" % known_people)
+        images = self.image_files_in_folder(known_people)
         unknown_image = face_recognition.load_image_file(path_to_unknown)
         unknown_encoding = face_recognition.face_encodings(unknown_image)[0]
         for image in images:

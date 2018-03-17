@@ -8,6 +8,9 @@ BINARY=processor
 build:
 	go build -i -o ./build/${BINARY} && cp .env build/
 
+linux:
+	env GOOS=linux GOARCH=arm go build -o build/${BINARY}
+
 test:
 	go test ./...
 
