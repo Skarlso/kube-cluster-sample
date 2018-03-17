@@ -1,4 +1,14 @@
 --
+-- Create main database
+--
+create database kube;
+
+--
+-- Use main database
+--
+use kube;
+
+--
 -- Table for images that are stored
 --
 create table images(
