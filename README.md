@@ -46,9 +46,21 @@ const (
 
 If an image is failed processing those can be later reconciled / retried, by a cron job for example, scavenging for images which failed processing.
 
+To generate the protobuf code, run:
+
+```bash
+protoc -I facerecog/ facerecog/face.proto --go_out=plugins=grpc:facerecog
+```
+
 ## Face Recognition
 
 Using protobuf and gRPC, the face recognition service talks to the image processor service. This ensures the flexibility of exchanging the face recognition service to whatever implementation is available at any given point in time.
+
+To generate the protobuf code, run:
+
+```bash
+python3 -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. face.proto
+```
 
 ## Circuit Breaker
 
