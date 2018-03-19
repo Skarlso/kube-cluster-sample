@@ -1,7 +1,8 @@
 --
 -- Create main database
 --
-create database kube;
+-- create database kube;
+-- This will be created by an environment property to the kube.
 
 --
 -- Use main database

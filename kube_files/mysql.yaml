@@ -20,7 +20,7 @@ spec:
     requests:
       storage: 1Gi
 ---
-apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql
@@ -39,16 +39,26 @@ spec:
       - image: mysql:5.6
         name: mysql
         env:
-          # Use secret in real usage
         - name: MYSQL_ROOT_PASSWORD
-          value: password123
+          valueFrom:
+            secretKeyRef:
+              name: kube-face-secret
+              key: mysql_password
+        - name: MYSQL_DATABASE
+          value: kube
         ports:
         - containerPort: 3306
           name: mysql
         volumeMounts:
         - name: mysql-persistent-storage
           mountPath: /var/lib/mysql
+        - name: bootstrap-script
+          mountPath: /docker-entrypoint-initdb.d/database_setup.sql
       volumes:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
           claimName: mysql-pv-claim
+      - name: bootstrap-script
+        hostPath:
+          path: /Users/hannibal/golang/src/github.com/Skarlso/kube-cluster-sample/database_setup.sql
+          type: File
