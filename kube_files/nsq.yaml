@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-nsqlookup
+spec:
+  selector:
+    matchLabels:
+      app: nsqlookup
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nsqlookup
+    spec:
+      containers:
+      - name: nsqlookup
+        image: skarlso/kube-nsqlookup:latest
+        ports:
+        - containerPort: 4150
+          hostPort: 4150
+        env:
+

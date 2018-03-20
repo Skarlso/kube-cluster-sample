@@ -14,6 +14,10 @@ spec:
     spec:
       containers:
       - name: receiver
-        image: skarlso/kube-receiver:latest
+        image: skarlso/kube-receiver
         ports:
         - containerPort: 4150
+          hostPort: 4150
+        env:
+        - name: MYSQL_CONNECTION
+          value: mysql.default.svc.cluster.local
