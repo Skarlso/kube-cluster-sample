@@ -6,7 +6,7 @@ BINARY=receiver
 
 
 build:
-	go build -i -o ./build/${BINARY} && cp .env build/
+	go build -i -o ./build/${BINARY}
 
 linux:
 	env GOOS=linux GOARCH=arm go build -o build/${BINARY}
