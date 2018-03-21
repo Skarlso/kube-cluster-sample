@@ -33,7 +33,12 @@ func (c *Configuration) loadConfiguration() {
 func initiateEnvironment() {
 	ex, _ := os.Executable()
 	path := filepath.Dir(ex)
-	data, err := ioutil.ReadFile(filepath.Join(path, ".env"))
+	envPath := filepath.Join(path, ".env")
+	if _, err := os.Stat(envPath); os.IsNotExist(err) {
+		log.Println(".env doesn't exists. moving on assuming env is setup.")
+		return
+	}
+	data, err := ioutil.ReadFile(envPath)
 	if err != nil {
 		log.Fatal(err)
 	}

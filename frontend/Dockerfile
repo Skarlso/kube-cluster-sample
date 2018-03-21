@@ -1,10 +1,15 @@
-FROM ubuntu
+FROM golang:1.10.0-alpine3.7
 
+RUN apk --no-cache add git make
+RUN go get -d -v github.com/Skarlso/kube-cluster-sample/...
+WORKDIR /go/src/github.com/Skarlso/kube-cluster-sample/frontend
+RUN make
+
+FROM alpine:latest
 LABEL Author="Gergely Brautigam"
-
-COPY build/.env /root
-COPY build/frontend /root
-
-EXPOSE 8081
+RUN apk --no-cache add ca-certificates
+WORKDIR /root/
+COPY --from=0 /go/src/github.com/Skarlso/kube-cluster-sample/frontend/build/frontend .
+EXPOSE 4150
 
 CMD [ "/root/frontend" ]
