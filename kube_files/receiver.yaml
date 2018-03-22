@@ -4,11 +4,12 @@ metadata:
   name: receiver-service
 spec:
   ports:
-  - protocol: HTTP
+  - protocol: TCP
     port: 8000
     targetPort: 8000
   selector:
     app: receiver
+  type: NodePort
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -47,29 +48,29 @@ spec:
           value: "127.0.0.1"
         - name: PRODUCER_ADDRESS
           value: "127.0.0.1:4150"
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: receiver-nsq
-spec:
-  selector:
-    matchLabels:
-      app: receiver-nsq
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: receiver-nsq
-    spec:
-      containers:
-      - name: receiver-nsq
-        image: nsqio/nsq
-        ports:
-        - containerPort: 8000
-          hostPort: 8000
-        command: ["/nsqd"]
-        args: ["--lookupd-tcp-address=$(NSQLOOKUP_ADDRESS):4160"]
-        env:
-        - name: NSQLOOKUP_ADDRESS
-          value: nsqlookup.default.svc.cluster.local
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: receiver-nsq
+# spec:
+#   selector:
+#     matchLabels:
+#       app: receiver-nsq
+#   replicas: 1
+#   template:
+#     metadata:
+#       labels:
+#         app: receiver-nsq
+#     spec:
+#       containers:
+#       - name: receiver-nsq
+#         image: nsqio/nsq
+#         ports:
+#         - containerPort: 8000
+#           hostPort: 8000
+#         command: ["/nsqd"]
+#         args: ["--lookupd-tcp-address=$(NSQLOOKUP_ADDRESS):4160"]
+#         env:
+#         - name: NSQLOOKUP_ADDRESS
+#           value: nsqlookup.default.svc.cluster.local
