@@ -1,7 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: receiver-service
+spec:
+  ports:
+  - protocol: HTTP
+    port: 8000
+    targetPort: 8000
+  selector:
+    app: receiver
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kube-receiver
+  name: receiver-deployment
 spec:
   selector:
     matchLabels:
@@ -16,21 +28,48 @@ spec:
       - name: receiver
         image: skarlso/kube-receiver-alpine:latest
         ports:
-        - containerPort: 4150
-          hostPort: 4150
+        - containerPort: 8000
+          hostPort: 8000
         env:
         - name: MYSQL_CONNECTION
-          value: mysql.default.svc.cluster.local
+          value: "mysql.default.svc.cluster.local"
         - name: MYSQL_USERPASSWORD
           valueFrom:
             secretKeyRef:
               name: kube-face-secret
               key: mysql_userpassword
         - name: MYSQL_PORT
-          value: 3306
+          # TIL: If this is 3306 kubectl throws an error.
+          value: "3306"
         - name: MYSQL_DBNAME
           value: kube
         - name: NSQ_ADDRESS
-          value: 127.0.0.1
+          value: "127.0.0.1"
         - name: PRODUCER_ADDRESS
-          value: 127.0.0.1:4150
+          value: "127.0.0.1:4150"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: receiver-nsq
+spec:
+  selector:
+    matchLabels:
+      app: receiver-nsq
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: receiver-nsq
+    spec:
+      containers:
+      - name: receiver-nsq
+        image: nsqio/nsq
+        ports:
+        - containerPort: 8000
+          hostPort: 8000
+        command: ["/nsqd"]
+        args: ["--lookupd-tcp-address=$(NSQLOOKUP_ADDRESS):4160"]
+        env:
+        - name: NSQLOOKUP_ADDRESS
+          value: nsqlookup.default.svc.cluster.local

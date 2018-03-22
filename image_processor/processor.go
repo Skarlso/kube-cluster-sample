@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"log"
 	"sync"
 	"time"
@@ -34,7 +36,8 @@ var imageQueue = &ImageQueue{imageQueue: make([]int, 0)}
 var c = sync.NewCond(&sync.Mutex{})
 var circuitBreaker *CircuitBreaker
 
-func processImages() {
+// Return a result channel
+func processImages(response chan Response) {
 	for {
 		c.L.Lock()
 		for len(imageQueue.imageQueue) == 0 {
@@ -42,13 +45,13 @@ func processImages() {
 		}
 		circuitBreaker = NewCircuitBreaker()
 		for len(imageQueue.imageQueue) > 0 {
-			processImage(imageQueue.drain())
+			processImage(imageQueue.drain(), response)
 		}
 		c.L.Unlock()
 	}
 }
 
-func processImage(i int) {
+func processImage(i int, response chan Response) {
 	db := DbConnection{}
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
@@ -62,7 +65,9 @@ func processImage(i int) {
 	defer cancel()
 	path, err := db.getPath(i)
 	if err != nil {
-		log.Printf("error while getting path for image id: %d", i)
+		message := fmt.Sprintf("error while getting path for image id: %d", i)
+		resp := Response{Error: errors.New(message)}
+		response <- resp
 		return
 	}
 	circuitBreaker.F = func() (*facerecog.IdentifyResponse, error) {
@@ -82,20 +87,28 @@ func processImage(i int) {
 	if err != nil {
 		dbErr := db.updateImageWithFailedStatus(i)
 		if dbErr != nil {
-			log.Printf("could not update image to failed status: %v", dbErr)
+			message := fmt.Sprintf("could not update image to failed status: %v", dbErr)
+			resp := Response{Error: errors.New(message)}
+			response <- resp
 		}
+		resp := Response{Error: err}
+		response <- resp
 		return
 	}
 	p, err := db.getPersonFromImage(r.GetImageName())
 	if err != nil {
-		log.Printf("warning: could not retrieve person: %v", err)
+		message := fmt.Sprintf("warning: could not retrieve person: %v", err)
+		resp := Response{Error: errors.New(message)}
+		response <- resp
 		return
 	}
 	log.Println("got person: ", p.Name)
 	log.Println("updating record with person id")
 	err = db.updateImageWithPerson(p.ID, i)
 	if err != nil {
-		log.Printf("warning: could not update image record: %v", err)
+		message := fmt.Sprintf("warning: could not update image record: %v", err)
+		resp := Response{Error: errors.New(message)}
+		response <- resp
 	}
 	log.Println("done")
 }

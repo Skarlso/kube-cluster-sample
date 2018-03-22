@@ -10,6 +10,6 @@ LABEL Author="Gergely Brautigam"
 RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 COPY --from=0 /go/src/github.com/Skarlso/kube-cluster-sample/receiver/build/receiver .
-EXPOSE 4150
+EXPOSE 8000
 
 CMD [ "/root/receiver" ]
