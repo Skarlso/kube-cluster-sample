@@ -11,6 +11,17 @@ spec:
     app: receiver
   type: NodePort
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nsqd
+spec:
+  ports:
+  - port: 4150
+  selector:
+    app: nsqd
+  clusterIP: None
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -45,32 +56,34 @@ spec:
         - name: MYSQL_DBNAME
           value: kube
         - name: NSQ_ADDRESS
-          value: "127.0.0.1"
+          value: "nsqd.default.svc.cluster.local"
         - name: PRODUCER_ADDRESS
-          value: "127.0.0.1:4150"
-# ---
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: receiver-nsq
-# spec:
-#   selector:
-#     matchLabels:
-#       app: receiver-nsq
-#   replicas: 1
-#   template:
-#     metadata:
-#       labels:
-#         app: receiver-nsq
-#     spec:
-#       containers:
-#       - name: receiver-nsq
-#         image: nsqio/nsq
-#         ports:
-#         - containerPort: 8000
-#           hostPort: 8000
-#         command: ["/nsqd"]
-#         args: ["--lookupd-tcp-address=$(NSQLOOKUP_ADDRESS):4160"]
-#         env:
-#         - name: NSQLOOKUP_ADDRESS
-#           value: nsqlookup.default.svc.cluster.local
+          value: "nsqd.default.svc.cluster.local:4150"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nsqd
+spec:
+  selector:
+    matchLabels:
+      app: nsqd
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nsqd
+    spec:
+      containers:
+      - name: nsqd
+        image: nsqio/nsq
+        ports:
+        - containerPort: 4150
+          hostPort: 4150
+        - containerPort: 4151
+          hostPort: 4151
+        env:
+        - name: NSQLOOKUP_ADDRESS
+          value: nsqlookup.default.svc.cluster.local
+        command: ["/nsqd"]
+        args: ["--lookupd-tcp-address=$(NSQLOOKUP_ADDRESS):4160"]

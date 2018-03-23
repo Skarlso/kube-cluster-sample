@@ -1,5 +1,13 @@
 apiVersion: v1
 kind: Service
+metadata:
+  name: nsqlookup
+spec:
+  ports:
+  - port: 4160
+  selector:
+    app: nsqlookup
+  clusterIP: None
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -24,5 +32,3 @@ spec:
           hostPort: 4160
         - containerPort: 4161
           hostPort: 4161
-        env:
-
