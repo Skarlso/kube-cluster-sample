@@ -43,9 +43,7 @@ func main() {
 	log.Println("Starting image processing routine...")
 	process := func() <-chan Response {
 		response := make(chan Response)
-		go func() {
-			go processImages(response)
-		}()
+		go processImages(response)
 		return response
 	}
 	resp := process()
