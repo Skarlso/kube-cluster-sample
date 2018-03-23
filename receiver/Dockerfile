@@ -1,6 +1,7 @@
 FROM golang:1.10.0-alpine3.7
 
-RUN apk --no-cache add git make
+RUN apk --no-cache add git make vim
+ADD version /root/version
 RUN go get -d -v github.com/Skarlso/kube-cluster-sample/...
 WORKDIR /go/src/github.com/Skarlso/kube-cluster-sample/receiver
 RUN make
