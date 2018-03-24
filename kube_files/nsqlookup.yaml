@@ -4,7 +4,14 @@ metadata:
   name: nsqlookup
 spec:
   ports:
-  - port: 4160
+  - name: main
+    protocol: TCP
+    port: 4160
+    targetPort: 4160
+  - name: secondary
+    protocol: TCP
+    port: 4161
+    targetPort: 4161
   selector:
     app: nsqlookup
   clusterIP: None
@@ -12,7 +19,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kube-nsqlookup
+  name: nsqlookup
 spec:
   selector:
     matchLabels:
@@ -27,6 +34,7 @@ spec:
       - name: nsqlookup
         image: nsqio/nsq
         command: ["/nsqlookupd"]
+        args: ["--broadcast-address=nsqlookup.default.svc.cluster.local"]
         ports:
         - containerPort: 4160
           hostPort: 4160

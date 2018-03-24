@@ -53,7 +53,7 @@ func processImages(response chan Response) {
 
 func processImage(i int, response chan Response) {
 	db := DbConnection{}
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(configuration.GRPCAddress, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
@@ -78,10 +78,7 @@ func processImage(i int, response chan Response) {
 	}
 	circuitBreaker.Ping = func() bool {
 		_, err := h.HealthCheck(ctx, &facerecog.Empty{})
-		if err != nil {
-			return false
-		}
-		return true
+		return err != nil
 	}
 	r, err := circuitBreaker.Call()
 	if err != nil {

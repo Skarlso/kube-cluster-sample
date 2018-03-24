@@ -16,6 +16,7 @@ type Configuration struct {
 	MySQLPort        int
 	MySQLDBName      string
 	NSQLookupAddress string
+	GRPCAddress      string
 }
 
 var configuration *Configuration
@@ -26,6 +27,7 @@ func (c *Configuration) loadConfiguration() {
 	c.MySQLPort, _ = strconv.Atoi(os.Getenv("MYSQL_PORT"))
 	c.MySQLUserPass = os.Getenv("MYSQL_USERPASSWORD")
 	c.NSQLookupAddress = os.Getenv("NSQ_LOOKUP_ADDRESS")
+	c.GRPCAddress = os.Getenv("GRPC_ADDRESS")
 }
 
 func initiateEnvironment() {

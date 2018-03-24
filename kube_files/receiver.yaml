@@ -17,7 +17,14 @@ metadata:
   name: nsqd
 spec:
   ports:
-  - port: 4150
+  - name: main
+    protocol: TCP
+    port: 4150
+    targetPort: 4150
+  - name: secondary
+    protocol: TCP
+    port: 4151
+    targetPort: 4151
   selector:
     app: nsqd
   clusterIP: None
@@ -75,6 +82,8 @@ spec:
         app: nsqd
     spec:
       containers:
+      # Note, since nsq persists information on disk via .dat file it might be advicable to store those
+      # in a mount.
       - name: nsqd
         image: nsqio/nsq
         ports:
@@ -85,5 +94,7 @@ spec:
         env:
         - name: NSQLOOKUP_ADDRESS
           value: nsqlookup.default.svc.cluster.local
+        - name: NSQ_BROADCAST_ADDRESS
+          value: nsqd.default.svc.cluster.local
         command: ["/nsqd"]
-        args: ["--lookupd-tcp-address=$(NSQLOOKUP_ADDRESS):4160"]
+        args: ["--lookupd-tcp-address=$(NSQLOOKUP_ADDRESS):4160", "--broadcast-address=$(NSQ_BROADCAST_ADDRESS)"]
