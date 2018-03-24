@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+spec:
+  ports:
+  - port: 8081
+  selector:
+    app: frontend
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: skarlso/kube-frontend-alpine
+        env:
+        - name: MYSQL_CONNECTION
+          value: "mysql.default.svc.cluster.local"
+        - name: MYSQL_USERPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: kube-face-secret
+              key: mysql_userpassword
+        - name: MYSQL_PORT
+          value: "3306"
+        - name: MYSQL_DBNAME
+          value: kube
+        - name: FRONTEND_PORT
+          value: "8081"
+        ports:
+        - containerPort: 8081
+          hostPort: 8081

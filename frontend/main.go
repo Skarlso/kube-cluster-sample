@@ -60,6 +60,6 @@ func view(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/", view)
-
-	http.ListenAndServe(":8081", nil)
+	log.Printf("Started server under port: %s\n", configuration.Port)
+	http.ListenAndServe(":"+configuration.Port, nil)
 }
