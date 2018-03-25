@@ -37,7 +37,7 @@ var c = sync.NewCond(&sync.Mutex{})
 var circuitBreaker *CircuitBreaker
 
 // Return a result channel
-func processImages(response chan Response) {
+func processImages() {
 	for {
 		c.L.Lock()
 		for len(imageQueue.imageQueue) == 0 {
@@ -45,10 +45,7 @@ func processImages(response chan Response) {
 		}
 		circuitBreaker = NewCircuitBreaker()
 		for len(imageQueue.imageQueue) > 0 {
-			err := processImage(imageQueue.drain())
-			if err != nil {
-				response <- Response{Error: err}
-			}
+			processImage(imageQueue.drain())
 		}
 		c.L.Unlock()
 	}

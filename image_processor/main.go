@@ -41,19 +41,7 @@ func main() {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 	log.Println("Starting image processing routine...")
-	process := func() <-chan Response {
-		response := make(chan Response)
-		go processImages(response)
-		return response
-	}
-	resp := process()
-	select {
-	case r := <-resp:
-		if r.Error != nil {
-			log.Println("error processing image: ", r.Error)
-		}
-	default:
-	}
+	go processImages()
 	log.Println("Starting queue consumer...")
 	go consume()
 	wg.Wait()
