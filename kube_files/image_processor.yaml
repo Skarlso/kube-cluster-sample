@@ -31,3 +31,5 @@ spec:
           value: kube
         - name: NSQ_LOOKUP_ADDRESS
           value: "nsqlookup.default.svc.cluster.local:4161"
+        - name: GRPC_ADDRESS
+          value: "face-recog.default.svc.cluster.local:50051"
