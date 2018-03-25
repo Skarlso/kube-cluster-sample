@@ -71,6 +71,7 @@ func (c *CircuitBreaker) Call() (*facerecog.IdentifyResponse, error) {
 		}
 		return nil, err
 	}
+	c.CurrentTries = 0
 	return r, err
 }
 
