@@ -37,18 +37,25 @@ var c = sync.NewCond(&sync.Mutex{})
 var circuitBreaker *CircuitBreaker
 
 // Return a result channel
-func processImages() {
-	for {
-		c.L.Lock()
-		for len(imageQueue.imageQueue) == 0 {
-			c.Wait()
+func processImages() chan Response {
+	response := make(chan Response)
+	go func() {
+		for {
+			c.L.Lock()
+			for len(imageQueue.imageQueue) == 0 {
+				c.Wait()
+			}
+			circuitBreaker = NewCircuitBreaker()
+			for len(imageQueue.imageQueue) > 0 {
+				err := processImage(imageQueue.drain())
+				if err != nil {
+					response <- Response{Error: err}
+				}
+			}
+			c.L.Unlock()
 		}
-		circuitBreaker = NewCircuitBreaker()
-		for len(imageQueue.imageQueue) > 0 {
-			processImage(imageQueue.drain())
-		}
-		c.L.Unlock()
-	}
+	}()
+	return response
 }
 
 func processImage(i int) error {

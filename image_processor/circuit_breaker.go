@@ -63,7 +63,6 @@ func (c *CircuitBreaker) Call() (*facerecog.IdentifyResponse, error) {
 	}
 	r, err := c.F()
 	if err != nil {
-		log.Printf("could not send image: %v", err)
 		c.CurrentTries++
 		if c.CurrentTries >= c.MaxTries {
 			log.Printf("maximum try of %d sends reached. disabling for %v time period.", c.MaxTries, c.TimeOut)
