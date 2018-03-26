@@ -40,7 +40,7 @@ COPY face_pb2_grpc.py /root
 COPY face_pb2.py /root
 COPY identifier.py /root
 
-VOLUME [ "/unkown_people", "/known_people" ]
+VOLUME [ "/unknown_people", "/known_people" ]
 
 EXPOSE 50051
 
