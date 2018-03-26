@@ -41,9 +41,11 @@ func main() {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 	log.Println("Starting image processing routine...")
-	response := processImages()
+	responseSignaller := sync.NewCond(new(sync.Mutex))
+	response := processImages(responseSignaller)
 	go func() {
 		for {
+			responseSignaller.L.Lock()
 			select {
 			case r := <-response:
 				if r.Error != nil {
@@ -51,6 +53,8 @@ func main() {
 				}
 			default:
 			}
+			responseSignaller.Wait()
+			responseSignaller.L.Unlock()
 		}
 	}()
 	log.Println("Starting queue consumer...")
