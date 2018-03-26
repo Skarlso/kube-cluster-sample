@@ -37,7 +37,8 @@ var c = sync.NewCond(&sync.Mutex{})
 var circuitBreaker *CircuitBreaker
 
 // Return a result channel
-func processImages(responseSignaller *sync.Cond) chan Response {
+func processImages() (chan Response, *sync.Cond) {
+	responseSignaller := sync.NewCond(new(sync.Mutex))
 	response := make(chan Response)
 	go func() {
 		for {
@@ -56,7 +57,7 @@ func processImages(responseSignaller *sync.Cond) chan Response {
 			c.L.Unlock()
 		}
 	}()
-	return response
+	return response, responseSignaller
 }
 
 func processImage(i int) error {

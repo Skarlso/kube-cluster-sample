@@ -41,8 +41,7 @@ func main() {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 	log.Println("Starting image processing routine...")
-	responseSignaller := sync.NewCond(new(sync.Mutex))
-	response := processImages(responseSignaller)
+	response, responseSignaller := processImages()
 	go func() {
 		for {
 			responseSignaller.L.Lock()
