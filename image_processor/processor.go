@@ -34,7 +34,6 @@ func (i *ImageQueue) drain() int {
 
 var imageQueue = &ImageQueue{imageQueue: make([]int, 0)}
 var c = sync.NewCond(&sync.Mutex{})
-var circuitBreaker *CircuitBreaker
 
 // Return a result channel
 func processImages() (chan Response, *sync.Cond) {
@@ -46,9 +45,9 @@ func processImages() (chan Response, *sync.Cond) {
 			for len(imageQueue.imageQueue) == 0 {
 				c.Wait()
 			}
-			circuitBreaker = NewCircuitBreaker()
+			circuitBreaker := NewCircuitBreaker()
 			for len(imageQueue.imageQueue) > 0 {
-				err := processImage(imageQueue.drain())
+				err := processImage(imageQueue.drain(), circuitBreaker)
 				if err != nil {
 					responseSignaller.Signal()
 					response <- Response{Error: err}
@@ -60,7 +59,7 @@ func processImages() (chan Response, *sync.Cond) {
 	return response, responseSignaller
 }
 
-func processImage(i int) error {
+func processImage(i int, circuitBreaker *CircuitBreaker) error {
 	db := DbConnection{}
 	conn, err := grpc.Dial(configuration.GRPCAddress, grpc.WithInsecure())
 	if err != nil {
