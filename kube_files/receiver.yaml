@@ -38,14 +38,20 @@ spec:
     matchLabels:
       app: receiver
   replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
   template:
     metadata:
       labels:
         app: receiver
     spec:
+      terminationGracePeriodSeconds: 15
       containers:
       - name: receiver
-        image: skarlso/kube-receiver-alpine:latest
+        image: skarlso/kube-receiver-alpine:v1.1
         ports:
         - containerPort: 8000
           hostPort: 8000
