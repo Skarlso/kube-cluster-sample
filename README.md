@@ -1,6 +1,6 @@
 # Kubernetes Sample Cluster Applications
 
-A sample Micro-Service cluster for Kubernetes.
+A sample Micro-Service application for my blog post about deploying with Kubernetes located here: [Deploying a Distributed Application with Kubernetes](https://skarlso.github.io/2018/03/15/kubernetes-distributed-application/).
 
 ## Db
 
