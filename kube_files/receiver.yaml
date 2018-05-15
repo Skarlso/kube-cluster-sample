@@ -9,7 +9,8 @@ spec:
     targetPort: 8000
   selector:
     app: receiver
-  type: NodePort
+  type: ExternalName
+  externalName: face-app.skarlso.com
 ---
 apiVersion: v1
 kind: Service
