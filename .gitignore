@@ -2,5 +2,4 @@
 .vscode
 __pycache__
 build
-secret.yaml
 *.dat
