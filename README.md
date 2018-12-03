@@ -62,7 +62,7 @@ To generate the protobuf code, run:
 python3 -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. face.proto
 ```
 
-## Circuit Breaker
+## Circuit Breaker
 
 The circuit breaker is a rudimentary circuit health check device. If it receives a pre-configured number of failed attempts at calling the back-end face recognition service, it will break the circuit for a period of time. After that period elapses it will re-try with a `Ping` to see if the service is at health. If the ping comes back as green, it opens the flow again.
 
@@ -122,3 +122,20 @@ Using Kubernetes to deploy sample application into various clusters.
 | 53 | /home/user/image_dump/test35 | John Doe   | 1      |
 | 54 | /home/user/image_dump/test36 | Gergely    | 1      |
 | 55 | /home/user/image_dump/test37 | Pending... | 2      |
+
+## Trouleshooting
+
+If a container is stuck on creating `kubectl describe pods` lists all the last actions.
+
+For example:
+
+```
+Events:
+  Type    Reason                 Age   From               Message
+  ----    ------                 ----  ----               -------
+  Normal  Scheduled              2m    default-scheduler  Successfully assigned nsqlookup-c9dc7574c-dtnjv to minikube
+  Normal  SuccessfulMountVolume  2m    kubelet, minikube  MountVolume.SetUp succeeded for volume "default-token-bvtbm"
+  Normal  Pulling                1m    kubelet, minikube  pulling image "nsqio/nsq"
+```
+
+We can see that this pod is pulling an image for a container which can be large so it takes a while.

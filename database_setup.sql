@@ -46,8 +46,8 @@ insert into person (name) values('John Doe');
 --
 -- Priming known people images table with some data
 --
-insert into person_images (image_name, person_id) values ('hannibal_1.jpg', 0);
-insert into person_images (image_name, person_id) values ('hannibal_2.jpg', 0);
-insert into person_images (image_name, person_id) values ('skarlso_1.jpg', 1);
-insert into person_images (image_name, person_id) values ('skarlso_2.jpg', 1);
-insert into person_images (image_name, person_id) values ('john_doe_1.jpg', 2);
+insert into person_images (image_name, person_id) values ('hannibal_1.jpg', 1);
+insert into person_images (image_name, person_id) values ('hannibal_2.jpg', 1);
+insert into person_images (image_name, person_id) values ('skarlso_1.jpg', 2);
+insert into person_images (image_name, person_id) values ('skarlso_2.jpg', 2);
+insert into person_images (image_name, person_id) values ('john_doe_1.jpg', 3);
