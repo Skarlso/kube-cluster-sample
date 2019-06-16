@@ -61,5 +61,5 @@ spec:
           claimName: mysql-pv-claim
       - name: bootstrap-script
         hostPath:
-          path: /Users/gbrautigam/goprojects/kube-cluster-sample/database_setup.sql
+          path: /Users/hannibal/goprojects/kube-cluster-sample/database_setup.sql
           type: File

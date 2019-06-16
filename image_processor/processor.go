@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"log"
 	"sync"
@@ -63,8 +62,7 @@ func processImage(i int, circuitBreaker *CircuitBreaker) error {
 	db := DbConnection{}
 	conn, err := grpc.Dial(configuration.GRPCAddress, grpc.WithInsecure())
 	if err != nil {
-		message := fmt.Sprintf("could not connect to grpc on: %s", configuration.GRPCAddress)
-		return errors.New(message)
+		return fmt.Errorf("could not connect to grpc on: %s", configuration.GRPCAddress)
 	}
 	defer conn.Close()
 	log.Println("Processing image id: ", i)
@@ -74,8 +72,7 @@ func processImage(i int, circuitBreaker *CircuitBreaker) error {
 	defer cancel()
 	path, err := db.getPath(i)
 	if err != nil {
-		message := fmt.Sprintf("error while getting path for image id: %d", i)
-		return errors.New(message)
+		return fmt.Errorf("error while getting path for image id: %d", i)
 	}
 	circuitBreaker.F = func() (*facerecog.IdentifyResponse, error) {
 		r, err := c.Identify(ctx, &facerecog.IdentifyRequest{
@@ -91,22 +88,19 @@ func processImage(i int, circuitBreaker *CircuitBreaker) error {
 	if err != nil {
 		dbErr := db.updateImageWithFailedStatus(i)
 		if dbErr != nil {
-			message := fmt.Sprintf("could not update image to failed status: %v. Reason for failed status: %v", dbErr, err)
-			return errors.New(message)
+			return fmt.Errorf("could not update image to failed status: %v. Reason for failed status: %v", dbErr, err)
 		}
 		return err
 	}
 	p, err := db.getPersonFromImage(r.GetImageName())
 	if err != nil {
-		message := fmt.Sprintf("warning: could not retrieve person: %v", err)
-		return errors.New(message)
+		return fmt.Errorf("warning: could not retrieve person: %v", err)
 	}
 	log.Println("got person: ", p.Name)
 	log.Println("updating record with person id")
 	err = db.updateImageWithPerson(p.ID, i)
 	if err != nil {
-		message := fmt.Sprintf("warning: could not update image record: %v", err)
-		return errors.New(message)
+		return fmt.Errorf("warning: could not update image record: %v", err)
 	}
 	log.Println("done")
 	return nil

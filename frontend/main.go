@@ -61,5 +61,7 @@ func view(w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.HandleFunc("/", view)
 	log.Printf("Started server under port: %s\n", configuration.Port)
-	http.ListenAndServe(":"+configuration.Port, nil)
+	if err := http.ListenAndServe(":"+configuration.Port, nil); err != nil {
+		log.Fatal(err)
+	}
 }

@@ -1,7 +1,6 @@
 from concurrent import futures
 import time
 import face_recognition
-import sys
 import os
 import re
 import click
@@ -17,12 +16,10 @@ class Identifer(face_pb2_grpc.IdentifyServicer):
     def Identify(self, request, context):
         path = request.image_path
         image_name = self.identify(path)
-        return face_pb2.IdentifyResponse(image_name = image_name)
-
+        return face_pb2.IdentifyResponse(image_name=image_name)
 
     def image_files_in_folder(self, folder):
         return [os.path.join(folder, f) for f in os.listdir(folder) if re.match(r'.*\.(jpg|jpeg|png)', f, flags=re.I)]
-
 
     def identify(self, path_to_unknown):
         if len(path_to_unknown) < 1:
@@ -37,7 +34,7 @@ class Identifer(face_pb2_grpc.IdentifyServicer):
             known_image = face_recognition.load_image_file(image)
             known_encoding = face_recognition.face_encodings(known_image)[0]
             results = face_recognition.compare_faces([known_encoding], unknown_encoding)
-            if results:
+            if results[0]:
                 return basename(image)
         return "none"
 

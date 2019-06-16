@@ -43,9 +43,9 @@ spec:
       volumes:
       - name: known-people-storage
         hostPath:
-          path: /Users/gbrautigam/Temp/known_people
+          path: /Users/hannibal/Temp/known_people
           type: Directory
       - name: unknown-people-storage
         hostPath:
-          path: /Users/gbrautigam/Temp/unknown_people
+          path: /Users/hannibal/Temp/unknown_people
           type: Directory
