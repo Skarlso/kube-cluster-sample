@@ -4,7 +4,24 @@ A sample Micro-Service application for my blog post about deploying with Kuberne
 
 ## Db
 
-Database is MySQL which can run anywhere but needs to be accessible by all services.
+Database is MySQL which can run anywhere but needs to be accessible by all services. In order to debug the database,
+first, determine what pod it runs on with:
+
+```bash
+kubectl get pods
+```
+
+Then run:
+
+```bash
+kubectl port-forward mysql-77976765f9-j25xl 3306:3306
+```
+
+... to expose the database to localhost. Once that is done, simply access it with a local mysql client:
+
+```bash
+mysql -ptcp -h127.0.0.1 -P3306 -uroot -ppassword123
+```
 
 ## Receiver
 
