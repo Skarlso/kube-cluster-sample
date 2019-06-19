@@ -1,5 +1,5 @@
 from concurrent import futures
-from multiprocessing import Queue, Process, Pool
+from multiprocessing import Pool
 import time
 import face_recognition
 import os
