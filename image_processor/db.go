@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"log"
 
@@ -29,13 +28,6 @@ func (dc *DbConnection) open() error {
 	}
 	dc.DB = db
 	return db.Ping()
-}
-
-func (dc *DbConnection) close() error {
-	if dc.DB != nil {
-		dc.DB.Close()
-	}
-	return errors.New("trying to close a nil connection")
 }
 
 func (dc *DbConnection) getPath(id int) (string, error) {

@@ -58,7 +58,7 @@ func (c *CircuitBreaker) Call() (*facerecog.IdentifyResponse, error) {
 		c.checkIfOver()
 	}
 	if c.On {
-		log.Printf("max sending try count of %d reached. sending not allowed for %v time period.", c.MaxTries, c.CurrentBreakTime.Add(c.TimeOut).Sub(time.Now()))
+		log.Printf("max sending try count of %d reached. sending not allowed for %v time period.", c.MaxTries, time.Until(c.CurrentBreakTime.Add(c.TimeOut)))
 		return nil, errors.New("circuitbreaker is engaged")
 	}
 	r, err := c.F()

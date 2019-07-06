@@ -62,7 +62,10 @@ func TestCallShouldFailAfterXTimesOfFail(t *testing.T) {
 	c.F = func() (*facerecog.IdentifyResponse, error) {
 		return nil, errors.New("test error")
 	}
-	c.Call()
+	_, err := c.Call()
+	if err != nil {
+		t.Fatal(err)
+	}
 	if !c.On {
 		t.Fatal("should have engaged after one failure. was not on.")
 	}
@@ -77,7 +80,10 @@ func TestCallShouldNotFailIfFunctionWorks(t *testing.T) {
 	c.F = func() (*facerecog.IdentifyResponse, error) {
 		return nil, nil
 	}
-	c.Call()
+	_, err := c.Call()
+	if err != nil {
+		t.Fatal(err)
+	}
 	if c.On {
 		t.Fatal("circuit breaker should not have engaged.")
 	}
