@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"log"
 
-	nsq "github.com/bitly/go-nsq"
+	"github.com/bitly/go-nsq"
 )
 
 func consume() {
