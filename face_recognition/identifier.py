@@ -42,7 +42,7 @@ class Identifer(face_pb2_grpc.IdentifyServicer):
         self.UnknownEncoding = face_recognition.face_encodings(unknown_image)[0]
         results = []
         with Pool(10) as pool:
-            results.append(pool.map(self.process_image, images))
+            results += pool.map(self.process_image, images)
 
         result = list(filter(lambda x: x != 'not_found', results))
         # There could be more, but we only care about the first non not_found result.
