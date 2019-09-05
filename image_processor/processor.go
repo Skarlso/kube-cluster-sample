@@ -100,6 +100,7 @@ func processImage(i int, circuitBreaker *CircuitBreaker) error {
 		}
 		return fmt.Errorf("person could not be identified")
 	}
+	log.Println("got name from face recog processor: ", name)
 	p, err := db.getPersonFromImage(name)
 	if err != nil {
 		return fmt.Errorf("warning: could not retrieve person: %v", err)
