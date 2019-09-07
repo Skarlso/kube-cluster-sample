@@ -26,6 +26,7 @@ spec:
       containers:
       - name: frontend
         image: skarlso/kube-frontend-alpine
+        imagePullPolicy: Always
         env:
         - name: MYSQL_CONNECTION
           value: "mysql.default.svc.cluster.local"

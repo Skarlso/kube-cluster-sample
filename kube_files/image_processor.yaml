@@ -16,6 +16,7 @@ spec:
       containers:
       - name: image-processor
         image: skarlso/kube-processor-alpine:latest
+        imagePullPolicy: Always
         env:
         - name: MYSQL_CONNECTION
           value: "mysql.default.svc.cluster.local"

@@ -92,7 +92,16 @@ func processImage(i int, circuitBreaker *CircuitBreaker) error {
 		}
 		return err
 	}
-	p, err := db.getPersonFromImage(r.GetImageName())
+	name := r.GetImageName()
+	if name == "not_found" {
+		dbErr := db.updateImageWithFailedStatus(i)
+		if dbErr != nil {
+			return fmt.Errorf("could not update image to failed status: %v. Reason for failed status: %v", dbErr, err)
+		}
+		return fmt.Errorf("person could not be identified")
+	}
+	log.Println("got name from face recog processor: ", name)
+	p, err := db.getPersonFromImage(name)
 	if err != nil {
 		return fmt.Errorf("warning: could not retrieve person: %v", err)
 	}

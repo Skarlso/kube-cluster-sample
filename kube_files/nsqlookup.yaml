@@ -33,6 +33,7 @@ spec:
       containers:
       - name: nsqlookup
         image: nsqio/nsq
+        imagePullPolicy: Always
         command: ["/nsqlookupd"]
         args: ["--broadcast-address=nsqlookup.default.svc.cluster.local"]
         ports:
