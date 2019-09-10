@@ -24,7 +24,7 @@ func init() {
 }
 
 func main() {
-	log.Println("Starting image processing routine...")
+	log.Println("Starting redeeming failed images...")
 	db := DbConnection{}
 	if err := db.open(); err != nil {
 		log.Fatal("unable to make db connection: ", err)
@@ -34,5 +34,5 @@ func main() {
 		log.Fatal("unable to get all failed images: ", err)
 	}
 
-	log.Printf("found %d failed images to reprocess\n", len(paths))
+	log.Printf("found %d failed images to redeem\n", len(paths))
 }

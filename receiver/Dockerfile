@@ -1,4 +1,4 @@
-FROM golang:1.10.0-alpine3.7
+FROM golang:1.13.0-alpine3.10
 
 RUN apk --no-cache add git make vim
 ADD version /root/version

@@ -1,4 +1,4 @@
-BINARY=failed-retryer
+BINARY=redeemer
 
 .DEFAULT_GOAL := build
 
