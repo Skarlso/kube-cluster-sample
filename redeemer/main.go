@@ -29,10 +29,18 @@ func main() {
 	if err := db.open(); err != nil {
 		log.Fatal("unable to make db connection: ", err)
 	}
-	paths, err := db.getAllFailedImages()
+	ids, err := db.getAllFailedImages()
 	if err != nil {
 		log.Fatal("unable to get all failed images: ", err)
 	}
 
-	log.Printf("found %d failed images to redeem\n", len(paths))
+	log.Printf("found %d failed images to redeem\n", len(ids))
+	log.Println("starting parallel processing of failed images...")
+	nsq := new(NSQ)
+	for _, id := range ids {
+		err := nsq.sendImage(Image{ID: id})
+		if err != nil {
+			log.Println("failed to send image with id: ", id)
+		}
+	}
 }

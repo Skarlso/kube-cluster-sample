@@ -11,10 +11,12 @@ import (
 
 // Configuration represent a db configuration.
 type Configuration struct {
-	MySQLHostname    string
-	MySQLUserPass    string
-	MySQLPort        int
-	MySQLDBName      string
+	MySQLHostname   string
+	MySQLUserPass   string
+	MySQLPort       int
+	MySQLDBName     string
+	NSQAddress      string
+	ProducerAddress string
 }
 
 var configuration *Configuration
@@ -23,6 +25,8 @@ func (c *Configuration) loadConfiguration() {
 	c.MySQLHostname = os.Getenv("MYSQL_CONNECTION")
 	c.MySQLDBName = os.Getenv("MYSQL_DBNAME")
 	c.MySQLPort, _ = strconv.Atoi(os.Getenv("MYSQL_PORT"))
+	c.NSQAddress = os.Getenv("NSQ_ADDRESS")
+	c.ProducerAddress = os.Getenv("PRODUCER_ADDRESS")
 }
 
 func initiateEnvironment() {

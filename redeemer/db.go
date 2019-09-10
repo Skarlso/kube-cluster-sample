@@ -29,24 +29,24 @@ func (dc *DbConnection) open() error {
 	return db.Ping()
 }
 
-func (dc *DbConnection) getAllFailedImages() ([]string, error) {
+func (dc *DbConnection) getAllFailedImages() ([]int, error) {
 	err := dc.open()
 	if err != nil {
 		return nil, err
 	}
-	rows, err := dc.Query("select path from images where status = ?", FAILEDPROCESSING)
+	rows, err := dc.Query("select id from images where status = ?", FAILEDPROCESSING)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var paths []string
+	var ids []int
 	for rows.Next() {
-		var p string
-		if err := rows.Scan(&p); err != nil {
+		var id int
+		if err := rows.Scan(&id); err != nil {
 			return nil, err
 		}
-		paths = append(paths, p)
+		ids = append(ids, id)
 	}
-	return paths, err
+	return ids, err
 }
