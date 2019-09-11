@@ -1,6 +1,5 @@
 FROM golang:1.13.0-alpine3.10
 
-ADD version /root/version
 RUN apk --no-cache add git make vim
 RUN go get -d -v github.com/Skarlso/kube-cluster-sample/...
 WORKDIR /go/src/github.com/Skarlso/kube-cluster-sample/redeemer

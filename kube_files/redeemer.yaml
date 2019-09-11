@@ -1,7 +1,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: failed-retryer
+  name: redeemer
 spec:
   schedule: "0 1 * * *" # every day
   jobTemplate:
@@ -9,8 +9,8 @@ spec:
       template:
         spec:
           containers:
-            - name: failed-retryer
-              image: skarlso/kube-failed-retryer
+            - name: redeemer
+              image: skarlso/kube-redeemer:0.0.1
               env:
                 - name: MYSQL_CONNECTION
                   value: "mysql.default.svc.cluster.local"
