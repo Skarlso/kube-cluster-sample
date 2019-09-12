@@ -10,7 +10,7 @@ spec:
         spec:
           containers:
             - name: redeemer
-              image: skarlso/kube-redeemer:0.0.1
+              image: skarlso/kube-redeemer:0.0.2
               env:
                 - name: MYSQL_CONNECTION
                   value: "mysql.default.svc.cluster.local"
