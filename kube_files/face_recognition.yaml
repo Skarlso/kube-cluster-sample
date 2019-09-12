@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
       - name: face-recog
-        image: skarlso/kube-face-recog
+        image: skarlso/kube-face-recog:1.0.0
         imagePullPolicy: Always
         ports:
         - containerPort: 50051

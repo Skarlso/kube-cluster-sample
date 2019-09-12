@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"sync"
 )
 
 // Person is a person
@@ -38,8 +37,7 @@ type Response struct {
 }
 
 func main() {
-	wg := &sync.WaitGroup{}
-	wg.Add(1)
+	done := make(chan struct{})
 	log.Println("Starting image processing routine...")
 	response, responseSignaller := processImages()
 	go func() {
@@ -58,5 +56,5 @@ func main() {
 	}()
 	log.Println("Starting queue consumer...")
 	go consume()
-	wg.Wait()
+	<-done // block and run forever
 }

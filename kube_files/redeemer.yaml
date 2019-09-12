@@ -1,0 +1,60 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: redeemer
+spec:
+  schedule: "0 1 * * *" # every day
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: redeemer
+              image: skarlso/kube-redeemer:0.0.1
+              env:
+                - name: MYSQL_CONNECTION
+                  value: "mysql.default.svc.cluster.local"
+                - name: MYSQL_USERPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: kube-face-secret
+                      key: mysql_userpassword
+                - name: MYSQL_PORT
+                  value: "3306"
+                - name: MYSQL_DBNAME
+                  value: kube
+                - name: PRODUCER_ADDRESS
+                  value: "nsqd.default.svc.cluster.local:4150"
+          restartPolicy: OnFailure
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nsqd
+spec:
+  selector:
+    matchLabels:
+      app: nsqd
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nsqd
+    spec:
+      containers:
+        # Note, since nsq persists information on disk via .dat file it might be advicable to store those
+        # in a mount.
+        - name: nsqd
+          image: nsqio/nsq
+          ports:
+            - containerPort: 4150
+              hostPort: 4150
+            - containerPort: 4151
+              hostPort: 4151
+          env:
+            - name: NSQLOOKUP_ADDRESS
+              value: nsqlookup.default.svc.cluster.local
+            - name: NSQ_BROADCAST_ADDRESS
+              value: nsqd.default.svc.cluster.local
+          command: ["/nsqd"]
+          args: ["--lookupd-tcp-address=$(NSQLOOKUP_ADDRESS):4160", "--broadcast-address=$(NSQ_BROADCAST_ADDRESS)"]

@@ -13,12 +13,12 @@ import (
 // said circuit. This is specific to Identify call thus the function will be
 // specific to this application.
 //
-// Potentionally if there are thousands of images that need processing
+// Potentially if there are thousands of images that need processing
 // and the endpoint for the processing becomes unstable, we will stop sending
 // it images for a few seconds to give it a chance to recover.
 //
 // This could be further improved if we store the requests which didn't go through
-// and re-process them after the circuit if alive again. But we leave that up to
+// and re-process them after the circuit is alive again. But we leave that up to
 // the caller for now.
 type CircuitBreaker struct {
 	TimeOut          time.Duration
@@ -52,7 +52,7 @@ func (c *CircuitBreaker) checkIfOver() {
 	}
 }
 
-// Call the function specifed under F.
+// Call the function specified under F.
 func (c *CircuitBreaker) Call() (*facerecog.IdentifyResponse, error) {
 	if c.On {
 		c.checkIfOver()
