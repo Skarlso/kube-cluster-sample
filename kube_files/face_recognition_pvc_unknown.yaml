@@ -19,4 +19,4 @@ spec:
             - key: local-pvc
               operator: In
               values:
-                - true
+                - "true"

@@ -7,7 +7,7 @@ spec:
     storage: 5Gi
   accessModes:
     - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
+  persistentVolumeReclaimPolicy: Delete
   volumeMode: Filesystem
   storageClassName: local-storage
   local:
@@ -19,4 +19,4 @@ spec:
             - key: local-pvc
               operator: In
               values:
-                - true
+                - "true"
