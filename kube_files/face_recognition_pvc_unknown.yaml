@@ -9,6 +9,14 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   volumeMode: Filesystem
-  storageClassName: my-local-pvc
+  storageClassName: local-storage
   local:
     path: /tmp/unknown_people
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: local-pvc
+              operator: In
+              values:
+                - true

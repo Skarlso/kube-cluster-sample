@@ -156,3 +156,11 @@ Events:
 ```
 
 We can see that this pod is pulling an image for a container which can be large so it takes a while.
+
+# Testing with Kind
+
+Apply label to the nodes in order for the PVC to work.
+
+```
+kubectl label nodes <your-node-name> local-pvc=true
+```
