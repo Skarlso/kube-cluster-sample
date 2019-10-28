@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: face-recognition-pv-known
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  volumeMode: Filesystem
+  storageClassName: local-storage
+  local:
+    path: /tmp/known_people
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: local-pvc
+              operator: In
+              values:
+                - "true"
