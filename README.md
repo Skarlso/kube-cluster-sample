@@ -164,3 +164,7 @@ Apply label to the nodes in order for the PVC to work.
 ```
 kubectl label nodes <your-node-name> local-pvc=true
 ```
+
+Storage for the face-recognition part.
+
+Create a PV which will describe a volume resource on the cluster. Then create a claim which will claim it for the service.
