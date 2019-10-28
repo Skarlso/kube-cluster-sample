@@ -159,12 +159,16 @@ We can see that this pod is pulling an image for a container which can be large 
 
 # Testing with Kind
 
+There is a project under sigs called [Kind](https://github.com/kubernetes-sigs/kind). I'm using it for testing.
+
+To test this deployment, you'll need a storage resource.
+
 Apply label to the nodes in order for the PVC to work.
 
 ```
 kubectl label nodes <your-node-name> local-pvc=true
 ```
 
-Storage for the face-recognition part.
-
 Create a PV which will describe a volume resource on the cluster. Then create a claim which will claim it for the service.
+
+Both can be found under kube_files called `face_recognition_pv{c}_{un}known.yaml`. 
