@@ -10,10 +10,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/Skarlso/kube-cluster-sample/receiver/models"
-
 	"github.com/gorilla/mux"
 
+	"github.com/Skarlso/kube-cluster-sample/receiver/models"
 	"github.com/Skarlso/kube-cluster-sample/receiver/pkg/providers"
 )
 

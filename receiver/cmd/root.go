@@ -5,9 +5,8 @@ import (
 	"flag"
 	"log"
 
-	"github.com/Skarlso/kube-cluster-sample/receiver/pkg/sender"
-
 	"github.com/Skarlso/kube-cluster-sample/receiver/pkg/images"
+	"github.com/Skarlso/kube-cluster-sample/receiver/pkg/sender"
 	"github.com/Skarlso/kube-cluster-sample/receiver/pkg/service"
 )
 
