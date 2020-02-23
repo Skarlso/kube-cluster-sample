@@ -10,11 +10,10 @@ import (
 
 // Db configs here
 type Config struct {
-	Port     string
-	Dbname   string
-	Password string
-	Username string
-	Hostname string
+	Port             string
+	Dbname           string
+	UsernamePassword string
+	Hostname         string
 }
 
 type imageProvider struct {
@@ -28,7 +27,7 @@ func NewImageProvider(cfg Config) *imageProvider {
 
 func (i *imageProvider) openConnection() (*sql.DB, error) {
 	connectionString := fmt.Sprintf("%s@tcp(%s:%s)/%s",
-		i.config.Username+i.config.Password,
+		i.config.UsernamePassword,
 		i.config.Hostname,
 		i.config.Port,
 		i.config.Dbname)

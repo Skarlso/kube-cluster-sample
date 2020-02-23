@@ -20,8 +20,7 @@ var (
 
 func init() {
 	flag.StringVar(&rootArgs.imgConfig.Hostname, "db-host", "localhost", "--db-host=localhost")
-	flag.StringVar(&rootArgs.imgConfig.Password, "db-password", "password123", "--db-password=password123")
-	flag.StringVar(&rootArgs.imgConfig.Username, "db-username", "root", "--db-username=root")
+	flag.StringVar(&rootArgs.imgConfig.UsernamePassword, "db-username-password", "root:password123", "--db-username-password=root:password123")
 	flag.StringVar(&rootArgs.imgConfig.Dbname, "db-dbname", "kube", "--db-dbname=kube")
 	flag.StringVar(&rootArgs.imgConfig.Port, "db-port", "3306", "--db-port=3306")
 	flag.StringVar(&rootArgs.senderConfig.Address, "nsq-address", "127.0.0.1", "--nsq-address=127.0.0.1")
