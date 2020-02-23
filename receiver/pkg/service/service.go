@@ -1,7 +1,9 @@
-package main
+// Author Gergely Brautigam
+package service
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -9,13 +11,36 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+
+	"github.com/Skarlso/kube-cluster-sample/receiver/models"
+	"github.com/Skarlso/kube-cluster-sample/receiver/pkg/providers"
 )
 
-func init() {
-	log.Println("Initiating environment...")
-	initiateEnvironment()
-	configuration = new(Configuration)
-	configuration.loadConfiguration()
+// Config is everything that this service needs to work.
+type Config struct {
+	Nsq struct {
+		Address string
+	}
+	Producer struct {
+		Address string
+	}
+}
+
+// Dependencies are providers which this service operates with.
+type Dependencies struct {
+	ImageProvider providers.ImageProvider
+	SendProvider  providers.SendProvider
+}
+
+// Service interface defines a service which can Run something.
+type Service interface {
+	Run(ctx context.Context) error
+}
+
+// Service represents the service object of the receiver.
+type receiver struct {
+	config Config
+	deps   Dependencies
 }
 
 // Path is a single path of an image to process.
@@ -30,7 +55,7 @@ type Paths struct {
 
 // PostImage handles a post of an image. Saves it to the database
 // and sends it to NSQ for further processing.
-func PostImage(w http.ResponseWriter, r *http.Request) {
+func (s *receiver) postImage(w http.ResponseWriter, r *http.Request) {
 	var p Path
 	err := json.NewDecoder(r.Body).Decode(&p)
 	if err != nil {
@@ -50,12 +75,12 @@ func PostImage(w http.ResponseWriter, r *http.Request) {
 	}
 	r.Body = ioutil.NopCloser(&pathsJSON)
 	r.ContentLength = int64(pathsJSON.Len())
-	PostImages(w, r)
+	s.postImages(w, r)
 }
 
 // PostImages handles a post of an image. Saves it to the database
 // and sends it to NSQ for further processing.
-func PostImages(w http.ResponseWriter, r *http.Request) {
+func (s *receiver) postImages(w http.ResponseWriter, r *http.Request) {
 	var p Paths
 	err := json.NewDecoder(r.Body).Decode(&p)
 	if err != nil {
@@ -63,21 +88,20 @@ func PostImages(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Fprintf(w, "got paths: %+v\n", p)
-	nsq := new(NSQ)
 	for _, path := range p.Paths {
-		image := Image{
+		image := models.Image{
 			ID:       -1,
 			PersonID: -1,
 			Path:     []byte(path.Path),
-			Status:   PENDING,
+			Status:   models.PENDING,
 		}
-		err = image.saveImage()
+		savedImage, err := s.deps.ImageProvider.SaveImage(&image)
 		if err != nil {
 			fmt.Fprintf(w, "got error while saving image: %s; moving on to next...", err)
 			continue
 		}
-		fmt.Fprintf(w, "image saved with id: %d\n", image.ID)
-		err = nsq.sendImage(image)
+		fmt.Fprintf(w, "image saved with id: %d\n", savedImage.ID)
+		err = s.deps.SendProvider.SendImage(uint64(savedImage.ID))
 		if err != nil {
 			fmt.Fprintf(w, "error while sending image to queue: %s", err)
 			continue
@@ -86,9 +110,20 @@ func PostImages(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func main() {
+// New creates a new service will all its needed configuration.
+func New(cfg Config, deps Dependencies) Service {
+	s := &receiver{
+		config: cfg,
+		deps:   deps,
+	}
+	return s
+}
+
+// Run starts this service.
+func (s *receiver) Run(ctx context.Context) error {
 	router := mux.NewRouter()
-	router.HandleFunc("/image/post", PostImage).Methods("POST")
-	router.HandleFunc("/images/post", PostImages).Methods("POST")
+	router.HandleFunc("/image/post", s.postImage).Methods("POST")
+	router.HandleFunc("/images/post", s.postImages).Methods("POST")
 	log.Fatal(http.ListenAndServe(":8000", router))
+	return nil
 }

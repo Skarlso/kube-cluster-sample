@@ -3,13 +3,14 @@ module github.com/Skarlso/kube-cluster-sample
 require (
 	github.com/bitly/go-nsq v1.0.7
 	github.com/go-sql-driver/mysql v1.4.1
-	github.com/golang/protobuf v1.2.0
+	github.com/golang/protobuf v1.3.1
 	github.com/golang/snappy v0.0.0-20180518054509-2e65f85255db // indirect
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/mux v1.6.2
 	github.com/nsqio/go-nsq v1.0.7 // indirect
-	golang.org/x/net v0.0.0-20181201002055-351d144fa1fc
-	google.golang.org/grpc v1.16.0
+	github.com/spf13/cobra v0.0.6
+	golang.org/x/net v0.0.0-20190522155817-f3200d17e092
+	google.golang.org/grpc v1.21.0
 )
 
 go 1.13
