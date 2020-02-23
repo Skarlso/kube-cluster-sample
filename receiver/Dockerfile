@@ -1,16 +1,9 @@
-FROM golang:1.13.0-alpine3.10
-
-RUN apk --no-cache add git make vim
-ADD version /root/version
-RUN go get -d -v github.com/Skarlso/kube-cluster-sample/...
-WORKDIR /go/src/github.com/Skarlso/kube-cluster-sample/receiver
-RUN make
-
-FROM alpine:latest
+FROM alpine
 LABEL Author="Gergely Brautigam"
-RUN apk --no-cache add ca-certificates
-WORKDIR /root/
-COPY --from=0 /go/src/github.com/Skarlso/kube-cluster-sample/receiver/build/receiver .
+RUN apk add -u ca-certificates
+COPY ./build/linux/amd64/receiver /app/
+
 EXPOSE 8000
 
-CMD [ "/root/receiver" ]
+WORKDIR /app/
+ENTRYPOINT [ "/app/receiver" ]
