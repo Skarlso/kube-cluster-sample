@@ -1,4 +1,3 @@
-// Author Gergely Brautigam
 package service
 
 import (

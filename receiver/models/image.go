@@ -1,11 +1,3 @@
-//
-// DISCLAIMER
-//
-// Copyright 2020 ArangoDB GmbH, Cologne, Germany
-//
-// Author Gergely Brautigam
-//
-
 package models
 
 // Status is an Image status representation
