@@ -6,12 +6,13 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Skarlso/kube-cluster-sample/image_processor/pkg/providers"
-
-	"github.com/Skarlso/kube-cluster-sample/image_processor/facerecog"
-	"github.com/Skarlso/kube-cluster-sample/image_processor/pkg/providers/circuitbreaker"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/rs/zerolog"
 	"google.golang.org/grpc"
+
+	"github.com/Skarlso/kube-cluster-sample/image_processor/facerecog"
+	"github.com/Skarlso/kube-cluster-sample/image_processor/pkg/providers"
+	"github.com/Skarlso/kube-cluster-sample/image_processor/pkg/providers/circuitbreaker"
 )
 
 // Person is a person

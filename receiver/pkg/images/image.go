@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 
+	_ "github.com/go-sql-driver/mysql"
+
 	"github.com/Skarlso/kube-cluster-sample/receiver/models"
 )
 
