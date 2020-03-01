@@ -5,11 +5,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/rs/zerolog"
+
 	"github.com/Skarlso/kube-cluster-sample/image_processor/facerecog"
 )
 
 func TestEngageDisengage(t *testing.T) {
-	c := NewcircuitBreaker()
+	c := NewcircuitBreaker(zerolog.Logger{})
 	c.engage()
 	if !c.On {
 		t.Fatal("want c.On = true, got: ", c.On)
@@ -25,7 +27,7 @@ func TestEngageDisengage(t *testing.T) {
 }
 
 func TestCheckIfOverPing(t *testing.T) {
-	c := NewcircuitBreaker()
+	c := NewcircuitBreaker(zerolog.Logger{})
 	c.TimeOut = 0 * time.Second
 	before := time.Now()
 	c.CurrentBreakTime = before
@@ -54,7 +56,7 @@ func TestCheckIfOverPing(t *testing.T) {
 }
 
 func TestCallShouldFailAfterXTimesOfFail(t *testing.T) {
-	c := NewcircuitBreaker()
+	c := NewcircuitBreaker(zerolog.Logger{})
 	c.TimeOut = 0 * time.Second
 	before := time.Now()
 	c.CurrentBreakTime = before
@@ -72,7 +74,7 @@ func TestCallShouldFailAfterXTimesOfFail(t *testing.T) {
 }
 
 func TestCallShouldNotFailIfFunctionWorks(t *testing.T) {
-	c := NewcircuitBreaker()
+	c := NewcircuitBreaker(zerolog.Logger{})
 	c.TimeOut = 0 * time.Second
 	before := time.Now()
 	c.CurrentBreakTime = before
@@ -90,7 +92,7 @@ func TestCallShouldNotFailIfFunctionWorks(t *testing.T) {
 }
 
 func TestCallShouldReturnErrorInCaseTheBreakerIsOn(t *testing.T) {
-	c := NewcircuitBreaker()
+	c := NewcircuitBreaker(zerolog.Logger{})
 	c.TimeOut = 0 * time.Second
 	before := time.Now()
 	c.CurrentBreakTime = before

@@ -2,8 +2,9 @@ package circuitbreaker
 
 import (
 	"errors"
-	"log"
 	"time"
+
+	"github.com/rs/zerolog"
 
 	"github.com/Skarlso/kube-cluster-sample/image_processor/facerecog"
 )
@@ -35,6 +36,7 @@ type circuitBreaker struct {
 	MaxTries         int
 	F                func() (*facerecog.IdentifyResponse, error)
 	Ping             func() bool
+	Logger           zerolog.Logger
 }
 
 func (c *circuitBreaker) engage() {
@@ -49,9 +51,9 @@ func (c *circuitBreaker) disengage() {
 
 func (c *circuitBreaker) checkIfOver() {
 	if c.CurrentBreakTime.Add(c.TimeOut).Before(time.Now()) {
-		log.Printf("timeout over. running ping.")
+		c.Logger.Info().Msg("timeout over. running ping.")
 		if !c.Ping() {
-			log.Println("backend still not functioning. extending break.")
+			c.Logger.Info().Msg("backend still not functioning. extending break.")
 			c.engage()
 			return
 		}
@@ -75,14 +77,14 @@ func (c *circuitBreaker) Call() (*facerecog.IdentifyResponse, error) {
 		c.checkIfOver()
 	}
 	if c.On {
-		log.Printf("max sending try count of %d reached. sending not allowed for %v time period.", c.MaxTries, time.Until(c.CurrentBreakTime.Add(c.TimeOut)))
+		c.Logger.Info().Int("max-tries", c.MaxTries).Interface("time", time.Until(c.CurrentBreakTime.Add(c.TimeOut))).Msg("max sending try count reached. sending not allowed until time period")
 		return nil, errors.New("circuitbreaker is engaged")
 	}
 	r, err := c.F()
 	if err != nil {
 		c.CurrentTries++
 		if c.CurrentTries >= c.MaxTries {
-			log.Printf("maximum try of %d sends reached. disabling for %v time period.", c.MaxTries, c.TimeOut)
+			c.Logger.Info().Int("max-tries", c.MaxTries).Int("time-out", int(c.TimeOut)).Msg("maximum try of sends reached. disabling for time perios")
 			c.engage()
 		}
 		return nil, err
@@ -92,12 +94,13 @@ func (c *circuitBreaker) Call() (*facerecog.IdentifyResponse, error) {
 }
 
 // NewcircuitBreaker defines some default parameters for the breaker.
-func NewcircuitBreaker() *circuitBreaker {
+func NewcircuitBreaker(log zerolog.Logger) *circuitBreaker {
 	c := circuitBreaker{
 		CurrentTries: 0,
 		MaxTries:     3,
 		On:           false,
 		TimeOut:      time.Second * 10,
+		Logger:       log,
 	}
 	return &c
 }

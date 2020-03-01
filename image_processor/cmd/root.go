@@ -3,10 +3,10 @@ package main
 import (
 	"context"
 	"flag"
-	"log"
 	"os"
 
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 
 	"github.com/Skarlso/kube-cluster-sample/image_processor/pkg/providers/circuitbreaker"
 	"github.com/Skarlso/kube-cluster-sample/image_processor/pkg/providers/consumer"
@@ -34,14 +34,14 @@ func init() {
 
 func main() {
 	// Wire up the service and its dependencies.
-	cb := circuitbreaker.NewcircuitBreaker()
-	logger := zerolog.New(os.Stdout)
+	logger := log.Output(zerolog.ConsoleWriter{Out: os.Stdout})
+	cb := circuitbreaker.NewcircuitBreaker(logger)
 	proc, err := processor.NewProcessorProvider(rootArgs.processorConfig, processor.Dependencies{
 		CircuitBreaker: cb,
 		Logger:         logger,
 	})
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal().Err(err).Msg("Failed to initiate the processor")
 	}
 
 	cons := consumer.NewConsumer(rootArgs.consumerConfig)
@@ -49,6 +49,7 @@ func main() {
 	srvc := service.New(rootArgs.service, service.Dependencies{
 		Processor: proc,
 		Consumer:  cons,
+		Logger:    logger,
 	})
 
 	srvc.Run(context.Background())
