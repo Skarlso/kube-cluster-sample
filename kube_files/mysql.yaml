@@ -60,6 +60,6 @@ spec:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
           claimName: mysql-pv-claim
-      - name: config-volume
+      - name: bootstrap-script
         configMap:
           name: db-bootstrap
