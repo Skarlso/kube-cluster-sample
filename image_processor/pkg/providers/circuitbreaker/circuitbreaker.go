@@ -1,4 +1,4 @@
-package main
+package circuitbreaker
 
 import (
 	"errors"
@@ -8,7 +8,14 @@ import (
 	"github.com/Skarlso/kube-cluster-sample/image_processor/facerecog"
 )
 
-// CircuitBreaker is a circuit of remote calls. The breaker is activated after
+// circuitBreaker defines the functionality of the circuit breaker.
+type CircuitBreaker interface {
+	Call() (*facerecog.IdentifyResponse, error)
+	SetCallF(func() (*facerecog.IdentifyResponse, error))
+	SetPingF(func() bool)
+}
+
+// circuitBreaker is a circuit of remote calls. The breaker is activated after
 // a configured amount of failed tries which disallows all subsequent calls to
 // said circuit. This is specific to Identify call thus the function will be
 // specific to this application.
@@ -20,7 +27,7 @@ import (
 // This could be further improved if we store the requests which didn't go through
 // and re-process them after the circuit is alive again. But we leave that up to
 // the caller for now.
-type CircuitBreaker struct {
+type circuitBreaker struct {
 	TimeOut          time.Duration
 	CurrentBreakTime time.Time
 	On               bool
@@ -30,17 +37,17 @@ type CircuitBreaker struct {
 	Ping             func() bool
 }
 
-func (c *CircuitBreaker) engage() {
+func (c *circuitBreaker) engage() {
 	c.CurrentBreakTime = time.Now()
 	c.On = true
 }
 
-func (c *CircuitBreaker) disengage() {
+func (c *circuitBreaker) disengage() {
 	c.CurrentTries = 0
 	c.On = false
 }
 
-func (c *CircuitBreaker) checkIfOver() {
+func (c *circuitBreaker) checkIfOver() {
 	if c.CurrentBreakTime.Add(c.TimeOut).Before(time.Now()) {
 		log.Printf("timeout over. running ping.")
 		if !c.Ping() {
@@ -52,8 +59,18 @@ func (c *CircuitBreaker) checkIfOver() {
 	}
 }
 
+// SetCallF adds the ability to define a calling function for the circuit breaker.
+func (c *circuitBreaker) SetCallF(f func() (*facerecog.IdentifyResponse, error)) {
+	c.F = f
+}
+
+// SetPingF adds the ability to define a ping function for the circuit breaker.
+func (c *circuitBreaker) SetPingF(f func() bool) {
+	c.Ping = f
+}
+
 // Call the function specified under F.
-func (c *CircuitBreaker) Call() (*facerecog.IdentifyResponse, error) {
+func (c *circuitBreaker) Call() (*facerecog.IdentifyResponse, error) {
 	if c.On {
 		c.checkIfOver()
 	}
@@ -74,9 +91,9 @@ func (c *CircuitBreaker) Call() (*facerecog.IdentifyResponse, error) {
 	return r, err
 }
 
-// NewCircuitBreaker defines some default parameters for the breaker.
-func NewCircuitBreaker() *CircuitBreaker {
-	c := CircuitBreaker{
+// NewcircuitBreaker defines some default parameters for the breaker.
+func NewcircuitBreaker() *circuitBreaker {
+	c := circuitBreaker{
 		CurrentTries: 0,
 		MaxTries:     3,
 		On:           false,
