@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: image-processor
-        image: skarlso/kube-processor-alpine:1.0.8
+        image: skarlso/kube-processor-alpine:1.0.9-test
         imagePullPolicy: IfNotPresent
         args:
           - --db-host=mysql.default.svc.cluster.local

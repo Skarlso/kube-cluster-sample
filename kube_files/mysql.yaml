@@ -55,11 +55,11 @@ spec:
           mountPath: /var/lib/mysql
         - name: bootstrap-script
           mountPath: /docker-entrypoint-initdb.d/database_setup.sql
+          subPath: database_setup.sql
       volumes:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
           claimName: mysql-pv-claim
-      - name: bootstrap-script
-        hostPath:
-          path: /Users/gbrautigam/goprojects/kube-cluster-sample/database_setup.sql
-          type: File
+      - name: config-volume
+        configMap:
+          name: db-bootstrap
