@@ -1,0 +1,32 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image-processor-deployment
+spec:
+  selector:
+    matchLabels:
+      app: image-processor
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: image-processor
+    spec:
+      containers:
+      - name: image-processor
+        image: skarlso/kube-processor-alpine:1.0.13
+        imagePullPolicy: IfNotPresent
+        args:
+          - --db-host=mysql.default.svc.cluster.local
+          - --db-username-password=$(MYSQL_USERPASSWORD)
+          - --db-port=3306
+          - --db-dbname=kube
+          - --nsq-lookup-address=nsqlookup.default.svc.cluster.local:4161
+          - --grpc-address=face-recog.default.svc.cluster.local:50051
+        env:
+        - name: MYSQL_USERPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: kube-face-secret
+              key: mysql_userpassword

@@ -32,7 +32,7 @@ func (s *nsqSender) SendImage(i uint64) error {
 	// The consumers use lookupd to find a queue.
 	// This means the image receiver needs to be on the same pod as the queue.
 	// Or I have to split it up.
-	w, _ := nsq.NewProducer(s.config.Address, config)
+	w, _ := nsq.NewProducer(s.config.Address, config) // TODO: WRONG ADDRESS. This should be the producer
 	buffer := make([]byte, 8)
 	binary.LittleEndian.PutUint64(buffer, i)
 	err := w.Publish("images", buffer)

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 
+	_ "github.com/go-sql-driver/mysql"
+
 	"github.com/Skarlso/kube-cluster-sample/receiver/models"
 )
 
@@ -31,11 +33,7 @@ func (i *imageProvider) openConnection() (*sql.DB, error) {
 		i.config.Hostname,
 		i.config.Port,
 		i.config.Dbname)
-	db, err := sql.Open("mysql", connectionString)
-	if err != nil {
-		return nil, err
-	}
-	return db, nil
+	return sql.Open("mysql", connectionString)
 }
 
 // SaveImage takes an image model and saves it into the database.

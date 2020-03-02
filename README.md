@@ -140,6 +140,14 @@ Using Kubernetes to deploy sample application into various clusters.
 | 54 | /home/user/image_dump/test36 | Gergely    | 1      |
 | 55 | /home/user/image_dump/test37 | Pending... | 2      |
 
+## Mysql
+
+Create the config map for the database which bootstraps the db.
+
+```bash
+kubectl create configmap db-bootstrap --from-file=database_setup.sql
+```
+
 ## Trouleshooting
 
 If a container is stuck on creating `kubectl describe pods` lists all the last actions.

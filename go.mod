@@ -8,8 +8,9 @@ require (
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/mux v1.6.2
 	github.com/nsqio/go-nsq v1.0.7 // indirect
+	github.com/rs/zerolog v1.18.0
 	github.com/spf13/cobra v0.0.6
-	golang.org/x/net v0.0.0-20190522155817-f3200d17e092
+	golang.org/x/net v0.0.0-20190620200207-3b0461eec859
 	google.golang.org/grpc v1.21.0
 )
 

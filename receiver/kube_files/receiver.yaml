@@ -51,7 +51,7 @@ spec:
       terminationGracePeriodSeconds: 15
       containers:
       - name: receiver
-        image: skarlso/kube-receiver-alpine:1.1.1
+        image: skarlso/kube-receiver-alpine:1.1.3
         ports:
         - containerPort: 8000
           hostPort: 8000
@@ -60,7 +60,6 @@ spec:
           - --db-username-password=$(MYSQL_USERPASSWORD)
           - --db-port=3306
           - --db-dbname=kube
-          - --nsq-address=nsqd.default.svc.cluster.local
           - --producer-address=nsqd.default.svc.cluster.local:4150
         env:
         - name: MYSQL_USERPASSWORD
