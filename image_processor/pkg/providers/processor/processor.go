@@ -50,12 +50,11 @@ type Dependencies struct {
 
 // processor defines a processor which uses a real database to store and process data.
 type processor struct {
-	deps           Dependencies
-	conf           Config
-	db             *sql.DB
-	client         facerecog.IdentifyClient
-	hclient        facerecog.HealthCheckClient
-	circuitBreaker circuitbreaker.CircuitBreaker
+	deps    Dependencies
+	conf    Config
+	db      *sql.DB
+	client  facerecog.IdentifyClient
+	hclient facerecog.HealthCheckClient
 }
 
 // NewProcessorProvider creates a new processor provider with an active grpc connection.
@@ -104,7 +103,7 @@ func (p *processor) updateImageWithPerson(personID, imageID int) error {
 // updateImage takes a sql and arguments to it and performs an update of the image record.
 // includes a row count. if no records were affected, it will return an error.
 func (p *processor) updateImage(sql string, args ...interface{}) error {
-	res, err := p.db.Exec(sql, args)
+	res, err := p.db.Exec(sql, args...)
 	if err != nil {
 		return err
 	}
@@ -150,7 +149,7 @@ func (p *processor) ProcessImages(in chan int) {
 			// log the error then continue
 			continue
 		}
-		p.circuitBreaker.SetCallF(func() (*facerecog.IdentifyResponse, error) {
+		p.deps.CircuitBreaker.SetCallF(func() (*facerecog.IdentifyResponse, error) {
 			ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 			defer cancel()
 			r, err := p.client.Identify(ctx, &facerecog.IdentifyRequest{
@@ -159,13 +158,13 @@ func (p *processor) ProcessImages(in chan int) {
 			return r, err
 		})
 
-		p.circuitBreaker.SetPingF(func() bool {
+		p.deps.CircuitBreaker.SetPingF(func() bool {
 			ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 			defer cancel()
 			_, err := p.hclient.HealthCheck(ctx, &facerecog.Empty{})
 			return err != nil
 		})
-		r, err := p.circuitBreaker.Call()
+		r, err := p.deps.CircuitBreaker.Call()
 		if err != nil {
 			if err := p.updateImageWithFailedStatus(i); err != nil {
 				p.deps.Logger.Error().Err(err).Msg("could not update image to failed status")

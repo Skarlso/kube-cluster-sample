@@ -15,12 +15,12 @@ spec:
     spec:
       containers:
       - name: image-processor
-        image: skarlso/kube-processor-alpine:1.0.10
+        image: skarlso/kube-processor-alpine:1.0.13
         imagePullPolicy: IfNotPresent
         args:
           - --db-host=mysql.default.svc.cluster.local
           - --db-username-password=$(MYSQL_USERPASSWORD)
-          - --db-port="3306"
+          - --db-port=3306
           - --db-dbname=kube
           - --nsq-lookup-address=nsqlookup.default.svc.cluster.local:4161
           - --grpc-address=face-recog.default.svc.cluster.local:50051
