@@ -1,13 +1,14 @@
-var express = require('express');
-var router = express.Router();
-var mysqlx = require('@mysql/xdevapi');
+const express = require('express');
+const router = express.Router();
+const mysqlx = require('@mysql/xdevapi');
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  var connection = mysqlx.getSession({user: "root", password: "password123", host: "localhost", port: '33060'})
-  connection.then(() => {
-    res.json({images: 'shit'});
-  }).catch((e) => {alert(e)})
+router.get('/', (req, res, next) => {
+  mysqlx.getSession({user: "root", password: "password123", host: "localhost", port: '33060'}).then(session => {
+    session.getSchema("kube").getTable("images").select().execute().then(row => {
+      res.json({images: row.toString()});
+    }).catch((e) => {throw e})
+  }).catch((e) => {throw e})
 });
 
 module.exports = router;
