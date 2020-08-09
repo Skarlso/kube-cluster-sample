@@ -3,7 +3,7 @@ package sender
 import (
 	"encoding/binary"
 
-	"github.com/bitly/go-nsq"
+	"github.com/nsqio/go-nsq"
 )
 
 // Config is the necessary configuration for the nsq sender.

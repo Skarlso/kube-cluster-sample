@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/binary"
 
-	nsq "github.com/bitly/go-nsq"
+	nsq "github.com/nsqio/go-nsq"
 )
 
 // sendImage sends an image ID to the queue.

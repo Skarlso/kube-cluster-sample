@@ -6,7 +6,7 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"github.com/bitly/go-nsq"
+	"github.com/nsqio/go-nsq"
 
 	"github.com/Skarlso/kube-cluster-sample/image_processor/pkg/providers"
 )
