@@ -148,7 +148,7 @@ Create the config map for the database which bootstraps the db.
 kubectl create configmap db-bootstrap --from-file=database_setup.sql
 ```
 
-## Trouleshooting
+## Troubleshooting
 
 If a container is stuck on creating `kubectl describe pods` lists all the last actions.
 
@@ -163,7 +163,7 @@ Events:
   Normal  Pulling                1m    kubelet, minikube  pulling image "nsqio/nsq"
 ```
 
-We can see that this pod is pulling an image for a container which can be large so it takes a while.
+We can see that this pod is pulling an image for a container, which can be large, so it takes a while.
 
 # Testing with Kind
 

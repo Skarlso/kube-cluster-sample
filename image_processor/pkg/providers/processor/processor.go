@@ -2,7 +2,6 @@ package processor
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"time"
 
@@ -11,48 +10,27 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/Skarlso/kube-cluster-sample/image_processor/facerecog"
+	"github.com/Skarlso/kube-cluster-sample/image_processor/pkg/models"
 	"github.com/Skarlso/kube-cluster-sample/image_processor/pkg/providers"
 	"github.com/Skarlso/kube-cluster-sample/image_processor/pkg/providers/circuitbreaker"
 )
 
-// Person is a person
-type Person struct {
-	ID   int
-	Name string
-}
-
-// Status is an Image status representation
-type Status int
-
-const (
-	// PENDING -- not yet send to face recognition service
-	PENDING Status = iota
-	// PROCESSED -- processed by face recognition service; even if no person was found for the image
-	PROCESSED
-	// FAILEDPROCESSING -- for whatever reason the processing failed and this image is flagged for a retry
-	FAILEDPROCESSING
-)
-
 // Config needed for the processor.
 type Config struct {
-	Port             string
-	Dbname           string
-	UsernamePassword string
-	Hostname         string
-	GrpcAddress      string
+	GrpcAddress string
 }
 
 // Dependencies of the processor provider.
 type Dependencies struct {
 	Logger         zerolog.Logger
 	CircuitBreaker circuitbreaker.CircuitBreaker
+	Storer         providers.ImageStorer
 }
 
 // processor defines a processor which uses a real database to store and process data.
 type processor struct {
 	deps    Dependencies
 	conf    Config
-	db      *sql.DB
 	client  facerecog.IdentifyClient
 	hclient facerecog.HealthCheckClient
 }
@@ -73,59 +51,14 @@ func NewProcessorProvider(cfg Config, deps Dependencies) (providers.ProcessorPro
 	}, nil
 }
 
-// open opens a connection to the database.
-func (p *processor) open() (*sql.DB, error) {
-	connectionString := fmt.Sprintf("%s@tcp(%s:%s)/%s",
-		p.conf.UsernamePassword,
-		p.conf.Hostname,
-		p.conf.Port,
-		p.conf.Dbname)
-	return sql.Open("mysql", connectionString)
-}
-
-// getPath returns the path information of the image.
-func (p *processor) getPath(id int) (string, error) {
-	var path string
-	err := p.db.QueryRow("select path from images where id = ? and status = ?", id, PENDING).Scan(&path)
-	return path, err
-}
-
 // updateImageWithFailedStatus updates a given image ID with failed status.
 func (p *processor) updateImageWithFailedStatus(imageID int) error {
-	return p.updateImage("update images set status = ? where id = ?", FAILEDPROCESSING, imageID)
+	return p.deps.Storer.UpdateImageStatus(imageID, models.FAILEDPROCESSING)
 }
 
 // updateImageWithPerson updates a record with the person's ID to which it belongs to.
 func (p *processor) updateImageWithPerson(personID, imageID int) error {
-	return p.updateImage("update images set person = ?, status = ? where id = ?", personID, PROCESSED, imageID)
-}
-
-// updateImage takes a sql and arguments to it and performs an update of the image record.
-// includes a row count. if no records were affected, it will return an error.
-func (p *processor) updateImage(sql string, args ...interface{}) error {
-	res, err := p.db.Exec(sql, args...)
-	if err != nil {
-		return err
-	}
-	rowCount, _ := res.RowsAffected()
-	if rowCount == 0 {
-		return fmt.Errorf("no rows were affected")
-	}
-	return nil
-}
-
-// getPersonFromImage returns the person matching this image.
-func (p *processor) getPersonFromImage(img string) (Person, error) {
-	var (
-		name string
-		id   int
-	)
-	err := p.db.QueryRow(`select person.name, person.id from person inner join person_images
-					   as pi on person.id = pi.person_id where image_name = ?`, img).Scan(&name, &id)
-	if err != nil {
-		return Person{}, err
-	}
-	return Person{Name: name, ID: id}, nil
+	return p.deps.Storer.UpdateImageWithPerson(imageID, personID, models.PROCESSED)
 }
 
 // ProcessImages takes a channel for input and waits on that channel for processable items.
@@ -136,14 +69,7 @@ func (p *processor) ProcessImages(in chan int) {
 		i := <-in
 		p.deps.Logger.Info().Int("image-id", i).Msg("Processing image...")
 
-		// open db connection
-		db, err := p.open()
-		if err != nil {
-			p.deps.Logger.Error().Err(err).Msg("failed to open db connection")
-			continue
-		}
-		p.db = db
-		path, err := p.getPath(i)
+		path, err := p.deps.Storer.GetPath(i)
 		if err != nil {
 			p.deps.Logger.Error().Err(err).Int("image-id", i).Msg("error while getting path for image")
 			// log the error then continue
@@ -183,7 +109,7 @@ func (p *processor) ProcessImages(in chan int) {
 			continue
 		}
 		p.deps.Logger.Info().Str("name", name).Msg("got name from face recog processor")
-		person, err := p.getPersonFromImage(name)
+		person, err := p.deps.Storer.GetPersonFromImage(name)
 		if err != nil {
 			p.deps.Logger.Error().Err(err).Msg("could not retrieve person")
 			continue
