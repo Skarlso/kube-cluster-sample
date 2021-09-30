@@ -11,7 +11,7 @@ import (
 )
 
 func TestEngageDisengage(t *testing.T) {
-	c := NewcircuitBreaker(zerolog.Logger{})
+	c := NewCircuitBreaker(zerolog.Logger{})
 	c.engage()
 	if !c.On {
 		t.Fatal("want c.On = true, got: ", c.On)
@@ -27,7 +27,7 @@ func TestEngageDisengage(t *testing.T) {
 }
 
 func TestCheckIfOverPing(t *testing.T) {
-	c := NewcircuitBreaker(zerolog.Logger{})
+	c := NewCircuitBreaker(zerolog.Logger{})
 	c.TimeOut = 0 * time.Second
 	before := time.Now()
 	c.CurrentBreakTime = before
@@ -56,7 +56,7 @@ func TestCheckIfOverPing(t *testing.T) {
 }
 
 func TestCallShouldFailAfterXTimesOfFail(t *testing.T) {
-	c := NewcircuitBreaker(zerolog.Logger{})
+	c := NewCircuitBreaker(zerolog.Logger{})
 	c.TimeOut = 0 * time.Second
 	before := time.Now()
 	c.CurrentBreakTime = before
@@ -74,7 +74,7 @@ func TestCallShouldFailAfterXTimesOfFail(t *testing.T) {
 }
 
 func TestCallShouldNotFailIfFunctionWorks(t *testing.T) {
-	c := NewcircuitBreaker(zerolog.Logger{})
+	c := NewCircuitBreaker(zerolog.Logger{})
 	c.TimeOut = 0 * time.Second
 	before := time.Now()
 	c.CurrentBreakTime = before
@@ -92,7 +92,7 @@ func TestCallShouldNotFailIfFunctionWorks(t *testing.T) {
 }
 
 func TestCallShouldReturnErrorInCaseTheBreakerIsOn(t *testing.T) {
-	c := NewcircuitBreaker(zerolog.Logger{})
+	c := NewCircuitBreaker(zerolog.Logger{})
 	c.TimeOut = 0 * time.Second
 	before := time.Now()
 	c.CurrentBreakTime = before

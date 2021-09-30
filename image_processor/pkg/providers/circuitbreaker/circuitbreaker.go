@@ -9,7 +9,7 @@ import (
 	"github.com/Skarlso/kube-cluster-sample/image_processor/facerecog"
 )
 
-// circuitBreaker defines the functionality of the circuit breaker.
+// CircuitBreaker defines the functionality of the circuit breaker.
 type CircuitBreaker interface {
 	Call() (*facerecog.IdentifyResponse, error)
 	SetCallF(func() (*facerecog.IdentifyResponse, error))
@@ -93,8 +93,8 @@ func (c *circuitBreaker) Call() (*facerecog.IdentifyResponse, error) {
 	return r, err
 }
 
-// NewcircuitBreaker defines some default parameters for the breaker.
-func NewcircuitBreaker(log zerolog.Logger) *circuitBreaker {
+// NewCircuitBreaker defines some default parameters for the breaker.
+func NewCircuitBreaker(log zerolog.Logger) *circuitBreaker {
 	c := circuitBreaker{
 		CurrentTries: 0,
 		MaxTries:     3,

@@ -44,7 +44,7 @@ func (s *imageProcessor) Run(ctx context.Context) {
 	s.deps.Logger.Info().Msg("Starting service...")
 	done := make(chan struct{})
 
-	// Create the channel on which the consumer and the processor can comunicate.
+	// Create the channel on which the consumer and the processor can communicate.
 	// This should be buffered.
 	mediator := make(chan int, 1)
 

@@ -4,9 +4,8 @@ import (
 	"encoding/binary"
 	"log"
 
-	"github.com/rs/zerolog"
-
 	"github.com/nsqio/go-nsq"
+	"github.com/rs/zerolog"
 
 	"github.com/Skarlso/kube-cluster-sample/image_processor/pkg/providers"
 )
@@ -30,17 +29,19 @@ func NewConsumer(cfg Config) providers.ConsumerProvider {
 	return &consumer{cfg: cfg}
 }
 
-// Consume consums an entry from NSQ.
+// Consume consumes an entry from NSQ.
 func (c *consumer) Consume(sendTo chan int) {
 	config := nsq.NewConfig()
-	q, _ := nsq.NewConsumer("images", "ch", config)
+	q, err := nsq.NewConsumer("images", "ch", config)
+	if err != nil {
+		log.Panic(err)
+	}
 	q.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
 		data := binary.LittleEndian.Uint64(message.Body)
 		sendTo <- int(data)
 		return nil
 	}))
-	err := q.ConnectToNSQLookupd(c.cfg.NsqAddress)
-	if err != nil {
+	if err := q.ConnectToNSQLookupd(c.cfg.NsqAddress); err != nil {
 		// TODO: Find a better way... :)
 		log.Panic(err)
 	}

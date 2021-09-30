@@ -2,8 +2,9 @@ FROM golang:1.13.0-alpine3.10
 
 RUN apk --no-cache add git make vim
 RUN mkdir -p /data
-RUN git clone https://github.com/Skarlso/kube-cluster-sample /data
-WORKDIR /data/redeemer
+#RUN git clone https://github.com/Skarlso/kube-cluster-sample /data
+WORKDIR /data
+COPY . .
 RUN make
 
 FROM alpine:latest

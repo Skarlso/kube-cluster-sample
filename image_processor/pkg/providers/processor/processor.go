@@ -131,7 +131,7 @@ func (p *processor) getPersonFromImage(img string) (Person, error) {
 // ProcessImages takes a channel for input and waits on that channel for processable items.
 // This channel must never be closed.
 func (p *processor) ProcessImages(in chan int) {
-	// continously get ids for image processing, block until something is received.
+	// continuously get ids for image processing, block until something is received.
 	for {
 		i := <-in
 		p.deps.Logger.Info().Int("image-id", i).Msg("Processing image...")

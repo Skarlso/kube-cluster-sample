@@ -35,7 +35,7 @@ func init() {
 func main() {
 	// Wire up the service and its dependencies.
 	logger := log.Output(zerolog.ConsoleWriter{Out: os.Stdout})
-	cb := circuitbreaker.NewcircuitBreaker(logger)
+	cb := circuitbreaker.NewCircuitBreaker(logger)
 	proc, err := processor.NewProcessorProvider(rootArgs.processorConfig, processor.Dependencies{
 		CircuitBreaker: cb,
 		Logger:         logger,

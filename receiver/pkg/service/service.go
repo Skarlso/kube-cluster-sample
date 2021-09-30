@@ -56,8 +56,7 @@ type Paths struct {
 // and sends it to NSQ for further processing.
 func (s *receiver) postImage(w http.ResponseWriter, r *http.Request) {
 	var p Path
-	err := json.NewDecoder(r.Body).Decode(&p)
-	if err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&p); err != nil {
 		fmt.Fprintf(w, "got error while decoding body: %s", err)
 		return
 	}
@@ -67,8 +66,7 @@ func (s *receiver) postImage(w http.ResponseWriter, r *http.Request) {
 	paths = append(paths, p)
 	ps.Paths = paths
 	var pathsJSON bytes.Buffer
-	err = json.NewEncoder(&pathsJSON).Encode(ps)
-	if err != nil {
+	if err := json.NewEncoder(&pathsJSON).Encode(ps); err != nil {
 		fmt.Fprintf(w, "failed to encode paths: %s", err)
 		return
 	}
@@ -77,12 +75,10 @@ func (s *receiver) postImage(w http.ResponseWriter, r *http.Request) {
 	s.postImages(w, r)
 }
 
-// PostImages handles a post of an image. Saves it to the database
-// and sends it to NSQ for further processing.
+// PostImages handles a post of multiple images.
 func (s *receiver) postImages(w http.ResponseWriter, r *http.Request) {
 	var p Paths
-	err := json.NewDecoder(r.Body).Decode(&p)
-	if err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&p); err != nil {
 		fmt.Fprintf(w, "got error while decoding request body: %s", err)
 		return
 	}
@@ -100,8 +96,7 @@ func (s *receiver) postImages(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 		fmt.Fprintf(w, "image saved with id: %d\n", savedImage.ID)
-		err = s.deps.SendProvider.SendImage(uint64(savedImage.ID))
-		if err != nil {
+		if err := s.deps.SendProvider.SendImage(uint64(savedImage.ID)); err != nil {
 			fmt.Fprintf(w, "error while sending image to queue: %s", err)
 			continue
 		}
