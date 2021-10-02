@@ -9,3 +9,5 @@ To start the slide show:
 Edit the [slides.md](./slides.md) to see the changes.
 
 Learn more about Slidev on [documentations](https://sli.dev/).
+
+All images of the Gophers are from https://github.com/ashleymcnamara/gophers.
