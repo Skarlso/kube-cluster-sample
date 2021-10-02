@@ -53,25 +53,31 @@ func NewProcessorProvider(cfg Config, deps Dependencies) (providers.ProcessorPro
 
 // updateImageWithFailedStatus updates a given image ID with failed status.
 func (p *processor) updateImageWithFailedStatus(imageID int) error {
-	return p.deps.Storer.UpdateImageStatus(imageID, models.FAILEDPROCESSING)
+	return p.deps.Storer.UpdateImage(imageID, -1, models.FAILEDPROCESSING)
 }
 
 // updateImageWithPerson updates a record with the person's ID to which it belongs to.
 func (p *processor) updateImageWithPerson(personID, imageID int) error {
-	return p.deps.Storer.UpdateImageWithPerson(imageID, personID, models.PROCESSED)
+	return p.deps.Storer.UpdateImage(imageID, personID, models.PROCESSED)
 }
 
 // ProcessImages takes a channel for input and waits on that channel for processable items.
 // This channel must never be closed.
+// TODO: introduce context to make this function cancellable and clean up after itself by draining in chan.
 func (p *processor) ProcessImages(in chan int) {
 	// continuously get ids for image processing, block until something is received.
 	for {
 		i := <-in
 		p.deps.Logger.Info().Int("image-id", i).Msg("Processing image...")
 
-		path, err := p.deps.Storer.GetPath(i)
+		image, err := p.deps.Storer.GetImage(i)
 		if err != nil {
 			p.deps.Logger.Error().Err(err).Int("image-id", i).Msg("error while getting path for image")
+			// log the error then continue
+			continue
+		}
+		if image.Status != models.PENDING {
+			p.deps.Logger.Error().Err(err).Int("image-id", i).Msg("image has already been processed")
 			// log the error then continue
 			continue
 		}
@@ -79,7 +85,7 @@ func (p *processor) ProcessImages(in chan int) {
 			ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 			defer cancel()
 			r, err := p.client.Identify(ctx, &facerecog.IdentifyRequest{
-				ImagePath: path,
+				ImagePath: image.Path,
 			})
 			return r, err
 		})

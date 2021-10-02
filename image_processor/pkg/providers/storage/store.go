@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
 
@@ -19,46 +20,53 @@ type Config struct {
 	Hostname         string
 }
 
+// MySQLStorage represents a storage implementation using MySQL.
 type MySQLStorage struct {
 	Config
 }
 
-func (m *MySQLStorage) GetPath(id int) (string, error) {
-	var path string
-	f := func(tx *sql.Tx) error {
-		return tx.QueryRow("select path from images where id = ? and status = ?", id, models.PENDING).Scan(&path)
+var _ providers.ImageStorer = &MySQLStorage{}
+
+// NewMySQLStorage creates a new Image storage.
+func NewMySQLStorage(cfg Config) *MySQLStorage {
+	return &MySQLStorage{
+		Config: cfg,
 	}
-	if err := m.execInTx(context.Background(), f); err != nil {
-		return "", fmt.Errorf("failed to get path: %w", err)
-	}
-	return path, nil
 }
 
-func (m *MySQLStorage) UpdateImageStatus(id int, status models.Status) error {
+// GetImage returns an image.
+func (m *MySQLStorage) GetImage(id int) (*models.Image, error) {
+	var (
+		path   string
+		person int
+		status int
+	)
 	f := func(tx *sql.Tx) error {
-		res, err := tx.Exec("update images set status = ? where id = ?", status, id)
-		if err != nil {
-			return fmt.Errorf("failed to update images: %w", err)
-		}
-		rows, err := res.RowsAffected()
-		if err != nil {
-			return fmt.Errorf("failed to get affected rows: %w", err)
-		}
-		if rows == 0 {
-			return fmt.Errorf("affect rows was zero")
-		}
-		return nil
+		return tx.QueryRow("select path, person, status from images where id = ?", id).Scan(&path, &person, &status)
 	}
 	if err := m.execInTx(context.Background(), f); err != nil {
-		return fmt.Errorf("failed to update images with status in transaction: %w", err)
+		return nil, fmt.Errorf("failed to get path: %w", err)
 	}
-	return nil
+	return &models.Image{
+		ID:     id,
+		Path:   path,
+		Person: person,
+		Status: models.Status(status),
+	}, nil
 }
 
-func (m *MySQLStorage) UpdateImageWithPerson(id int, person int, status models.Status) error {
+// UpdateImage updates an image.
+// There is no check if the person exists or not, because that is happening in GetPersonFromImage.
+func (m *MySQLStorage) UpdateImage(id int, person int, status models.Status) error {
 	f := func(tx *sql.Tx) error {
-		// TODO: this is duplicating the image status code. Should be handled better.
-		res, err := tx.Exec("update images set person = ?, status = ? where id = ?", person, status, id)
+		sets := []string{"status = ?"}
+		args := []interface{}{status}
+		if person != -1 {
+			sets = append(sets, "person = ?")
+			args = append(args, person)
+		}
+		args = append(args, id)
+		res, err := tx.Exec(fmt.Sprintf("update images set %s where id = ?", strings.Join(sets, ", ")), args...)
 		if err != nil {
 			return fmt.Errorf("failed to update images: %w", err)
 		}
@@ -87,18 +95,9 @@ func (m *MySQLStorage) GetPersonFromImage(image string) (*models.Person, error) 
 					   as pi on person.id = pi.person_id where image_name = ?`, image).Scan(&name, &id)
 	}
 	if err := m.execInTx(context.Background(), f); err != nil {
-		return nil, fmt.Errorf("failed to get path: %w", err)
+		return nil, fmt.Errorf("failed to get person: %w", err)
 	}
 	return &models.Person{Name: name, ID: id}, nil
-}
-
-var _ providers.ImageStorer = &MySQLStorage{}
-
-// NewMySQLStorage creates a new Image storage.
-func NewMySQLStorage(cfg Config) *MySQLStorage {
-	return &MySQLStorage{
-		Config: cfg,
-	}
 }
 
 // execInTx executes in transaction. It will either commit, or rollback if there was an error.
