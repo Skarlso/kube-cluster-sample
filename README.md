@@ -180,3 +180,15 @@ kubectl label nodes <your-node-name> local-pvc=true
 Create a PV which will describe a volume resource on the cluster. Then create a claim which will claim it for the service.
 
 Both can be found under kube_files called `face_recognition_pv{c}_{un}known.yaml`. 
+
+# Slides
+
+Slides is using [slidev](https://sli.dev).
+
+```shell
+cd presentation/kube
+npm i
+npm run dev
+```
+
+This should serve the `slides.md` located in that folder.
