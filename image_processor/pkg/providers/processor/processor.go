@@ -27,12 +27,12 @@ type Dependencies struct {
 	Storer         providers.ImageStorer
 }
 
-// processor defines a processor which uses a real database to store and process data.
-type processor struct {
-	deps    Dependencies
-	conf    Config
-	client  facerecog.IdentifyClient
-	hclient facerecog.HealthCheckClient
+// Processor defines a processor which uses a real database to store and process data.
+type Processor struct {
+	Dependencies
+	Config
+	IdentifyClient    facerecog.IdentifyClient
+	HealthCheckClient facerecog.HealthCheckClient
 }
 
 // NewProcessorProvider creates a new processor provider with an active grpc connection.
@@ -43,89 +43,88 @@ func NewProcessorProvider(cfg Config, deps Dependencies) (providers.ProcessorPro
 	}
 	c := facerecog.NewIdentifyClient(conn)
 	h := facerecog.NewHealthCheckClient(conn)
-	return &processor{
-		deps:    deps,
-		conf:    cfg,
-		client:  c,
-		hclient: h,
+	return &Processor{
+		Dependencies:      deps,
+		Config:            cfg,
+		IdentifyClient:    c,
+		HealthCheckClient: h,
 	}, nil
 }
 
 // updateImageWithFailedStatus updates a given image ID with failed status.
-func (p *processor) updateImageWithFailedStatus(imageID int) error {
-	return p.deps.Storer.UpdateImage(imageID, -1, models.FAILEDPROCESSING)
+func (p *Processor) updateImageWithFailedStatus(imageID int) error {
+	return p.Storer.UpdateImage(imageID, -1, models.FAILEDPROCESSING)
 }
 
 // updateImageWithPerson updates a record with the person's ID to which it belongs to.
-func (p *processor) updateImageWithPerson(personID, imageID int) error {
-	return p.deps.Storer.UpdateImage(imageID, personID, models.PROCESSED)
+func (p *Processor) updateImageWithPerson(personID, imageID int) error {
+	return p.Storer.UpdateImage(imageID, personID, models.PROCESSED)
 }
 
 // ProcessImages takes a channel for input and waits on that channel for processable items.
 // This channel must never be closed.
 // TODO: introduce context to make this function cancellable and clean up after itself by draining in chan.
-func (p *processor) ProcessImages(in chan int) {
+func (p *Processor) ProcessImages(in chan int) {
 	// continuously get ids for image processing, block until something is received.
 	for {
 		i := <-in
-		p.deps.Logger.Info().Int("image-id", i).Msg("Processing image...")
+		p.Logger.Info().Int("image-id", i).Msg("Processing image...")
 
-		image, err := p.deps.Storer.GetImage(i)
+		image, err := p.Storer.GetImage(i)
 		if err != nil {
-			p.deps.Logger.Error().Err(err).Int("image-id", i).Msg("error while getting path for image")
+			p.Logger.Error().Err(err).Int("image-id", i).Msg("error while getting path for image")
 			// log the error then continue
 			continue
 		}
 		if image.Status != models.PENDING {
-			p.deps.Logger.Error().Err(err).Int("image-id", i).Msg("image has already been processed")
+			p.Logger.Error().Err(err).Int("image-id", i).Msg("image has already been processed")
 			// log the error then continue
 			continue
 		}
-		p.deps.CircuitBreaker.SetCallF(func() (*facerecog.IdentifyResponse, error) {
+		p.CircuitBreaker.SetCallF(func() (*facerecog.IdentifyResponse, error) {
 			ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 			defer cancel()
-			r, err := p.client.Identify(ctx, &facerecog.IdentifyRequest{
+			r, err := p.IdentifyClient.Identify(ctx, &facerecog.IdentifyRequest{
 				ImagePath: image.Path,
 			})
 			return r, err
 		})
 
-		p.deps.CircuitBreaker.SetPingF(func() bool {
+		p.CircuitBreaker.SetPingF(func() bool {
 			ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 			defer cancel()
-			_, err := p.hclient.HealthCheck(ctx, &facerecog.Empty{})
+			_, err := p.HealthCheckClient.HealthCheck(ctx, &facerecog.Empty{})
 			return err != nil
 		})
-		r, err := p.deps.CircuitBreaker.Call()
+		r, err := p.CircuitBreaker.Call()
 		if err != nil {
 			if err := p.updateImageWithFailedStatus(i); err != nil {
-				p.deps.Logger.Error().Err(err).Msg("could not update image to failed status")
+				p.Logger.Error().Err(err).Msg("could not update image to failed status")
 				continue
 			}
-			p.deps.Logger.Error().Err(err).Msg("image processing failed, updated image to failed status.")
+			p.Logger.Error().Err(err).Msg("image processing failed, updated image to failed status.")
 			continue
 		}
 		name := r.GetImageName()
 		if name == "not_found" {
 			if err := p.updateImageWithFailedStatus(i); err != nil {
-				p.deps.Logger.Error().Err(err).Msg("could not update image to failed status")
+				p.Logger.Error().Err(err).Msg("could not update image to failed status")
 				continue
 			}
-			p.deps.Logger.Error().Msg("the person could not be identified")
+			p.Logger.Error().Msg("the person could not be identified")
 			continue
 		}
-		p.deps.Logger.Info().Str("name", name).Msg("got name from face recog processor")
-		person, err := p.deps.Storer.GetPersonFromImage(name)
+		p.Logger.Info().Str("name", name).Msg("got name from face recog processor")
+		person, err := p.Storer.GetPersonFromImage(name)
 		if err != nil {
-			p.deps.Logger.Error().Err(err).Msg("could not retrieve person")
+			p.Logger.Error().Err(err).Msg("could not retrieve person")
 			continue
 		}
-		p.deps.Logger.Info().Str("person-name", person.Name).Msg("got person... updating record with person id")
-		err = p.updateImageWithPerson(person.ID, i)
-		if err != nil {
-			p.deps.Logger.Error().Err(err).Msg("warning: could not update image record")
+		p.Logger.Info().Str("person-name", person.Name).Msg("got person... updating record with person id")
+		if err := p.updateImageWithPerson(person.ID, i); err != nil {
+			p.Logger.Error().Err(err).Msg("warning: could not update image record")
 			continue
 		}
-		p.deps.Logger.Info().Str("name", name).Msg("done")
+		p.Logger.Info().Str("name", name).Msg("done")
 	}
 }
