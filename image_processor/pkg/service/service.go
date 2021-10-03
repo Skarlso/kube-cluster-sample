@@ -52,7 +52,7 @@ func (s *imageProcessor) Run(ctx context.Context) {
 	go s.deps.Consumer.Consume(mediator)
 
 	// Start the processor routine.
-	go s.deps.Processor.ProcessImages(mediator)
+	go s.deps.Processor.ProcessImages(context.Background(), mediator)
 
 	// Block forever.
 	<-done

@@ -72,7 +72,9 @@ func TestProcessImageSuccessfully(t *testing.T) {
 		HealthCheckClient: fakeHealth,
 	}
 	in := make(chan int, 1)
-	go p.ProcessImages(in)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go p.ProcessImages(ctx, in)
 	in <- 1
 
 	// and then check if the image has been processed and the fakes have been called.
@@ -114,7 +116,9 @@ func TestProcessImageNotPending(t *testing.T) {
 		HealthCheckClient: fakeHealth,
 	}
 	in := make(chan int, 1)
-	go p.ProcessImages(in)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go p.ProcessImages(ctx, in)
 	in <- 1
 
 	// and then check if the image has been processed and the fakes have been called.
@@ -147,7 +151,9 @@ func TestProcessImageFailedToGetImage(t *testing.T) {
 		HealthCheckClient: fakeHealth,
 	}
 	in := make(chan int, 1)
-	go p.ProcessImages(in)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go p.ProcessImages(ctx, in)
 	in <- 1
 
 	// and then check if the image has been processed and the fakes have been called.
@@ -195,7 +201,9 @@ func TestProcessImageFailedToCallIdentityServiceCallsPing(t *testing.T) {
 		HealthCheckClient: fakeHealth,
 	}
 	in := make(chan int, 1)
-	go p.ProcessImages(in)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go p.ProcessImages(ctx, in)
 	in <- 1
 
 	// and then check if the image has been processed and the fakes have been called.
@@ -247,7 +255,9 @@ func TestProcessImageImageNameNotFound(t *testing.T) {
 		HealthCheckClient: fakeHealth,
 	}
 	in := make(chan int, 1)
-	go p.ProcessImages(in)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go p.ProcessImages(ctx, in)
 	in <- 1
 
 	// and then check if the image has been processed and the fakes have been called.
@@ -296,7 +306,9 @@ func TestProcessImagePersonNotFound(t *testing.T) {
 		HealthCheckClient: fakeHealth,
 	}
 	in := make(chan int, 1)
-	go p.ProcessImages(in)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go p.ProcessImages(ctx, in)
 	in <- 1
 
 	// and then check if the image has been processed and the fakes have been called.
@@ -347,7 +359,9 @@ func TestProcessImageFailedToUpdateImage(t *testing.T) {
 		HealthCheckClient: fakeHealth,
 	}
 	in := make(chan int, 1)
-	go p.ProcessImages(in)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go p.ProcessImages(ctx, in)
 	in <- 1
 
 	// and then check if the image has been processed and the fakes have been called.

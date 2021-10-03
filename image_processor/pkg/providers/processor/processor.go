@@ -63,68 +63,76 @@ func (p *Processor) updateImageWithPerson(personID, imageID int) error {
 
 // ProcessImages takes a channel for input and waits on that channel for processable items.
 // This channel must never be closed.
-// TODO: introduce context to make this function cancellable and clean up after itself by draining in chan.
-func (p *Processor) ProcessImages(in chan int) {
+func (p *Processor) ProcessImages(ctx context.Context, in chan int) {
 	// continuously get ids for image processing, block until something is received.
 	for {
-		i := <-in
-		p.Logger.Info().Int("image-id", i).Msg("Processing image...")
-
-		image, err := p.Storer.GetImage(i)
-		if err != nil {
-			p.Logger.Error().Err(err).Int("image-id", i).Msg("error while getting path for image")
-			// log the error then continue
-			continue
+		select {
+		case i := <-in:
+			p.processImage(i)
+		case <-ctx.Done():
+			p.Logger.Debug().Msg("Process image context has been cancelled. Existing.")
+			return
 		}
-		if image.Status != models.PENDING {
-			p.Logger.Error().Err(err).Int("image-id", i).Msg("image has already been processed")
-			// log the error then continue
-			continue
-		}
-		p.CircuitBreaker.SetCallF(func() (*facerecog.IdentifyResponse, error) {
-			ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-			defer cancel()
-			r, err := p.IdentifyClient.Identify(ctx, &facerecog.IdentifyRequest{
-				ImagePath: image.Path,
-			})
-			return r, err
-		})
-
-		p.CircuitBreaker.SetPingF(func() bool {
-			ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-			defer cancel()
-			_, err := p.HealthCheckClient.HealthCheck(ctx, &facerecog.Empty{})
-			return err != nil
-		})
-		r, err := p.CircuitBreaker.Call()
-		if err != nil {
-			if err := p.updateImageWithFailedStatus(i); err != nil {
-				p.Logger.Error().Err(err).Msg("could not update image to failed status")
-				continue
-			}
-			p.Logger.Error().Err(err).Msg("image processing failed, updated image to failed status.")
-			continue
-		}
-		name := r.GetImageName()
-		if name == "not_found" {
-			if err := p.updateImageWithFailedStatus(i); err != nil {
-				p.Logger.Error().Err(err).Msg("could not update image to failed status")
-				continue
-			}
-			p.Logger.Error().Msg("the person could not be identified")
-			continue
-		}
-		p.Logger.Info().Str("name", name).Msg("got name from face recog processor")
-		person, err := p.Storer.GetPersonFromImage(name)
-		if err != nil {
-			p.Logger.Error().Err(err).Msg("could not retrieve person")
-			continue
-		}
-		p.Logger.Info().Str("person-name", person.Name).Msg("got person... updating record with person id")
-		if err := p.updateImageWithPerson(person.ID, i); err != nil {
-			p.Logger.Error().Err(err).Msg("warning: could not update image record")
-			continue
-		}
-		p.Logger.Info().Str("name", name).Msg("done")
 	}
+}
+
+func (p *Processor) processImage(i int) {
+	p.Logger.Info().Int("image-id", i).Msg("Processing image...")
+
+	image, err := p.Storer.GetImage(i)
+	if err != nil {
+		p.Logger.Error().Err(err).Int("image-id", i).Msg("error while getting path for image")
+		// log the error then continue
+		return
+	}
+	if image.Status != models.PENDING {
+		p.Logger.Error().Err(err).Int("image-id", i).Msg("image has already been processed")
+		// log the error then continue
+		return
+	}
+	p.CircuitBreaker.SetCallF(func() (*facerecog.IdentifyResponse, error) {
+		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+		defer cancel()
+		r, err := p.IdentifyClient.Identify(ctx, &facerecog.IdentifyRequest{
+			ImagePath: image.Path,
+		})
+		return r, err
+	})
+
+	p.CircuitBreaker.SetPingF(func() bool {
+		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+		defer cancel()
+		_, err := p.HealthCheckClient.HealthCheck(ctx, &facerecog.Empty{})
+		return err != nil
+	})
+	r, err := p.CircuitBreaker.Call()
+	if err != nil {
+		if err := p.updateImageWithFailedStatus(i); err != nil {
+			p.Logger.Error().Err(err).Msg("could not update image to failed status")
+			return
+		}
+		p.Logger.Error().Err(err).Msg("image processing failed, updated image to failed status.")
+		return
+	}
+	name := r.GetImageName()
+	if name == "not_found" {
+		if err := p.updateImageWithFailedStatus(i); err != nil {
+			p.Logger.Error().Err(err).Msg("could not update image to failed status")
+			return
+		}
+		p.Logger.Error().Msg("the person could not be identified")
+		return
+	}
+	p.Logger.Info().Str("name", name).Msg("got name from face recog processor")
+	person, err := p.Storer.GetPersonFromImage(name)
+	if err != nil {
+		p.Logger.Error().Err(err).Msg("could not retrieve person")
+		return
+	}
+	p.Logger.Info().Str("person-name", person.Name).Msg("got person... updating record with person id")
+	if err := p.updateImageWithPerson(person.ID, i); err != nil {
+		p.Logger.Error().Err(err).Msg("warning: could not update image record")
+		return
+	}
+	p.Logger.Info().Str("name", name).Msg("done")
 }
