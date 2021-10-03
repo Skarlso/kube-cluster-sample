@@ -5,4 +5,3 @@ COPY ./build/linux/amd64/processor /app/
 
 WORKDIR /app/
 ENTRYPOINT [ "/app/processor" ]
-

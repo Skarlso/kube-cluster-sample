@@ -48,7 +48,7 @@ func main() {
 		logger.Fatal().Err(err).Msg("Failed to initiate the processor")
 	}
 
-	cons := consumer.NewConsumer(rootArgs.consumerConfig)
+	cons := consumer.NewConsumer(rootArgs.consumerConfig, consumer.Dependencies{Logger: logger})
 
 	srvc := service.New(rootArgs.service, service.Dependencies{
 		Processor: proc,
