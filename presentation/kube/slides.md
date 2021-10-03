@@ -22,7 +22,7 @@ Github: https://github.com/Skarlso/kube-cluster-sample <br>
 Twitter: https://twitter.com/Skarlso <br>
 
 <div class="absolute right-30px bottom-30px">
-  <img src="imgs/GO_BUILD.png" class="h-29" />
+  <img src="imgs/GO_BUILD.png" class="h-29"  alt="build"/>
 </div>
 
 ---
@@ -37,13 +37,13 @@ Twitter: https://twitter.com/Skarlso <br>
 - <uil-fidget-spinner /> **Distributed Systems** - why is it distributed exactly?
 - <uil-screw /> **GRPC** - where does it come in?
 - <uil-hourglass /> **Demo Time** - anything possible on a webpage
-- <uil-rocket /> **Refactoring Exercise** - shuddup show me some code
+- <uil-rocket /> **Refactoring Exercise** - show me some code
 
 <br>
 <br>
 
 <div class="absolute right-30px bottom-30px">
-  <img src="imgs/Doctor_Who_Gopher_Woman.png" class="h-29" />
+  <img src="imgs/Doctor_Who_Gopher_Woman.png" class="h-29"  alt="woman-who"/>
 </div>
 
 <style>
@@ -52,7 +52,6 @@ h1 {
   background-image: linear-gradient(45deg, #4EC5D4 10%, #146b8c 20%);
   background-size: 100%;
   -webkit-background-clip: text;
-  -moz-background-clip: text;
   -webkit-text-fill-color: transparent; 
   -moz-text-fill-color: transparent;
 }
@@ -70,7 +69,7 @@ Who has heard off, knows, is familiar, understands
 - Docker
 
 <div class="absolute right-30px bottom-30px">
-  <img src="imgs/GOPHER_VIKING.png" class="h-29" />
+  <img src="imgs/GOPHER_VIKING.png" class="h-29"  alt="viking"/>
 </div>
 
 ---
@@ -84,7 +83,7 @@ Who has heard off, knows, is familiar, understands
 - Website: https://gergelybrautigam.com
 
 <div class="absolute right-30px bottom-30px">
-  <img src="imgs/DOCTOR_STRANGE_GOPHER.png" class="h-29" />
+  <img src="imgs/DOCTOR_STRANGE_GOPHER.png" class="h-29"  alt="doctor-strange"/>
 </div>
 
 ---
@@ -92,7 +91,7 @@ Who has heard off, knows, is familiar, understands
 # Technologies
 
 <div class="absolute right-30px bottom-30px">
-  <img src="imgs/STAR_TREK_GOPHER.png" class="h-29" />
+  <img src="imgs/STAR_TREK_GOPHER.png" class="h-29"  alt="star-trek"/>
 </div>
 
 ---
@@ -100,13 +99,34 @@ Who has heard off, knows, is familiar, understands
 ## GRPC
 
 - Why?
+
+<v-click>
+
+Because of how we interact with the Python FaceRecognition library.
+
+</v-click>
+
 - Use Case
+
+<v-click>
+
+Versatile control over the API and strict contracts on how to implement things. 
+
+</v-click>
+
 - buf.build
+
+<v-click>
+
+GRPC really shines once you implement and use buf.build.
+
+</v-click>
+
 - Benefits
 - Drawbacks
 
 <div class="absolute right-30px bottom-30px">
-  <img src="imgs/GopherLink.png" class="h-29" />
+  <img src="imgs/GopherLink.png" class="h-29"  alt="link"/>
 </div>
 
 ---
@@ -114,15 +134,23 @@ Who has heard off, knows, is familiar, understands
 ## Kubernetes
 
 <div class="absolute right-30px bottom-30px">
-  <img src="imgs/Kubernetes_Gophers.png" class="h-29" />
+  <img src="imgs/Kubernetes_Gophers.png" class="h-29"  alt="kube"/>
 </div>
+
+---
+
+### Let's try to limit this
+
+
 
 ---
 
 ## NSQ
 
+> A realtime distributed messaging platform
+
 <div class="absolute right-30px bottom-30px">
-  <img src="imgs/GOPHERCON_ICELAND.png" class="h-29" />
+  <img src="imgs/GOPHERCON_ICELAND.png" class="h-29"  alt="iceland"/>
 </div>
 
 ---
@@ -130,7 +158,7 @@ Who has heard off, knows, is familiar, understands
 ## Go
 
 <div class="absolute right-30px bottom-30px">
-  <img src="imgs/Doctor_Who_Gopher.png" class="h-29" />
+  <img src="imgs/Doctor_Who_Gopher.png" class="h-29"  alt="doctor-who"/>
 </div>
 
 ---
@@ -138,7 +166,7 @@ Who has heard off, knows, is familiar, understands
 ## Face recognition
 
 <div class="absolute right-30px bottom-30px">
-  <img src="imgs/BATMAN_GOPHER.png" class="h-29" />
+  <img src="imgs/BATMAN_GOPHER.png" class="h-29"  alt="batman"/>
 </div>
 
 
@@ -146,23 +174,39 @@ Who has heard off, knows, is familiar, understands
 
 # Architecture
 
-<img style="position: fixed; top: 0px;" src="imgs/kube_architecture.png" class="m-29 h-100" />
-
 <div class="absolute right-30px bottom-30px">
-  <img src="imgs/RickAndMorty.png" class="h-29" />
+  <img src="imgs/RickAndMorty.png" class="h-29"  alt="rick-and-morty"/>
 </div>
+
+---
+
+## Microservice Architecture
+
+<img style="position: fixed; top: 0;" src="imgs/kube_architecture.png" class="m-29 h-100"  alt="architecture"/>
+
+---
+
+## Data flow
 
 ---
 
 # Distributed System
 
-- Why, At what level, Eventual Consistency model, where is the sync
-
-Hint: Database and the file storage on the image.
-
 <div class="absolute right-30px bottom-30px">
-  <img src="imgs/GoDZILLA.png" class="h-29" />
+  <img src="imgs/GoDZILLA.png" class="h-29"  alt="godzilla"/>
 </div>
+---
+
+Definition of a distributed system:
+
+> Multiple "something" ... linked together through the network to appear as one.
+
+There has to be a sync point.
+
+- How distributed is it?
+- Where is the sync point?
+- What level of consistency does it provide?
+- Where are the pain points and possible resource contests?
 
 ---
 
@@ -170,5 +214,5 @@ Hint: Database and the file storage on the image.
 Thank you for listening!
 
 <div class="absolute right-30px bottom-30px">
-  <img src="imgs/GOPHER_MIC_DROP.png" class="h-29" />
+  <img src="imgs/GOPHER_MIC_DROP.png" class="h-29"  alt="mic"/>
 </div>

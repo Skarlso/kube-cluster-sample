@@ -83,7 +83,7 @@ spec:
         app: nsqd
     spec:
       containers:
-      # Note, since nsq persists information on disk via .dat file it might be advicable to store those
+      # Note, since nsq persists information on disk via .dat file it might be advisable to store those
       # in a mount.
       - name: nsqd
         image: nsqio/nsq
