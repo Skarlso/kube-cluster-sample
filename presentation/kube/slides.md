@@ -21,7 +21,9 @@ Name: Gergely Brautigam <br>
 Github: https://github.com/Skarlso/kube-cluster-sample <br>
 Twitter: https://twitter.com/Skarlso <br>
 
-<img style="position: fixed; bottom: 0px; right: 0px;" src="imgs/GO_BUILD.png" class="m-29 h-29" />
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/GO_BUILD.png" class="h-29" />
+</div>
 
 ---
 
@@ -40,7 +42,9 @@ Twitter: https://twitter.com/Skarlso <br>
 <br>
 <br>
 
-<img style="position: fixed; bottom: 0px; right: 0px;" src="imgs/Doctor_Who_Gopher_Woman.png" class="m-29 h-29" />
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/Doctor_Who_Gopher_Woman.png" class="h-29" />
+</div>
 
 <style>
 h1 {
@@ -65,4 +69,106 @@ Who has heard off, knows, is familiar, understands
 - NSQ
 - Docker
 
-<img style="position: fixed; bottom: 0px; right: 0px;" src="imgs/GOPHER_VIKING.png" class="m-29 h-29" />
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/GOPHER_VIKING.png" class="h-29" />
+</div>
+
+---
+
+# Introduction
+
+- Name: Gergely Brautigam
+- Work: Weaveworks
+- Twitter: https://twitter.com/Skarlso
+- Github: https://github.com/Skarlso
+- Website: https://gergelybrautigam.com
+
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/DOCTOR_STRANGE_GOPHER.png" class="h-29" />
+</div>
+
+---
+
+# Technologies
+
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/STAR_TREK_GOPHER.png" class="h-29" />
+</div>
+
+---
+
+## GRPC
+
+- Why?
+- Use Case
+- buf.build
+- Benefits
+- Drawbacks
+
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/GopherLink.png" class="h-29" />
+</div>
+
+---
+
+## Kubernetes
+
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/Kubernetes_Gophers.png" class="h-29" />
+</div>
+
+---
+
+## NSQ
+
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/GOPHERCON_ICELAND.png" class="h-29" />
+</div>
+
+---
+
+## Go
+
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/Doctor_Who_Gopher.png" class="h-29" />
+</div>
+
+---
+
+## Face recognition
+
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/BATMAN_GOPHER.png" class="h-29" />
+</div>
+
+
+---
+
+# Architecture
+
+<img style="position: fixed; top: 0px;" src="imgs/kube_architecture.png" class="m-29 h-100" />
+
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/RickAndMorty.png" class="h-29" />
+</div>
+
+---
+
+# Distributed System
+
+- Why, At what level, Eventual Consistency model, where is the sync
+
+Hint: Database and the file storage on the image.
+
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/GoDZILLA.png" class="h-29" />
+</div>
+
+---
+
+# End
+Thank you for listening!
+
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/GOPHER_MIC_DROP.png" class="h-29" />
+</div>
