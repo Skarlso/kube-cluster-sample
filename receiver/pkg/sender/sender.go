@@ -4,11 +4,13 @@ import (
 	"encoding/binary"
 
 	"github.com/nsqio/go-nsq"
+	"github.com/rs/zerolog"
 )
 
 // Config is the necessary configuration for the nsq sender.
 type Config struct {
 	Address string
+	Logger  zerolog.Logger
 }
 
 type nsqSender struct {
@@ -27,6 +29,7 @@ func NewNSQSender(cfg Config) *nsqSender {
 // the image later on, but the ID will still remain
 // to be the ID.
 func (s *nsqSender) SendImage(i uint64) error {
+	s.config.Logger.Info().Uint64("id", i).Msg("sending image id to queue...")
 	config := nsq.NewConfig()
 	// The producer needs to be co-located with nsqd, so it can send messages to a local queue.
 	// The consumers use lookupd to find a queue.
@@ -37,9 +40,11 @@ func (s *nsqSender) SendImage(i uint64) error {
 	binary.LittleEndian.PutUint64(buffer, i)
 	err := w.Publish("images", buffer)
 	if err != nil {
+		s.config.Logger.Debug().Err(err).Msg("Failed to publish image id...")
 		return err
 	}
 
 	w.Stop()
+	s.config.Logger.Debug().Msg("done")
 	return nil
 }

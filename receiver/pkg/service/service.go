@@ -10,6 +10,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/zerolog"
 
 	"github.com/Skarlso/kube-cluster-sample/receiver/models"
 	"github.com/Skarlso/kube-cluster-sample/receiver/pkg/providers"
@@ -29,6 +30,7 @@ type Config struct {
 type Dependencies struct {
 	ImageProvider providers.ImageProvider
 	SendProvider  providers.SendProvider
+	Logger        zerolog.Logger
 }
 
 // Service interface defines a service which can Run something.
@@ -77,6 +79,7 @@ func (s *receiver) postImage(w http.ResponseWriter, r *http.Request) {
 
 // PostImages handles a post of multiple images.
 func (s *receiver) postImages(w http.ResponseWriter, r *http.Request) {
+	s.deps.Logger.Debug().Msg("post images called...")
 	var p Paths
 	if err := json.NewDecoder(r.Body).Decode(&p); err != nil {
 		fmt.Fprintf(w, "got error while decoding request body: %s", err)
@@ -115,6 +118,7 @@ func New(cfg Config, deps Dependencies) Service {
 
 // Run starts this service.
 func (s *receiver) Run(ctx context.Context) error {
+	s.deps.Logger.Info().Msg("starting receiver service....")
 	router := mux.NewRouter()
 	router.HandleFunc("/image/post", s.postImage).Methods("POST")
 	router.HandleFunc("/images/post", s.postImages).Methods("POST")
