@@ -7,11 +7,11 @@ spec:
     storage: 5Gi
   accessModes:
     - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Delete
+  persistentVolumeReclaimPolicy: Retain
   volumeMode: Filesystem
   storageClassName: local-storage
   local:
-    path: /tmp/known_people
+    path: /known_people
   nodeAffinity:
     required:
       nodeSelectorTerms:

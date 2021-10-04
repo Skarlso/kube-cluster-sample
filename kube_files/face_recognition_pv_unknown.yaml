@@ -11,7 +11,7 @@ spec:
   volumeMode: Filesystem
   storageClassName: local-storage
   local:
-    path: /tmp/unknown_people
+    path: /unknown_people
   nodeAffinity:
     required:
       nodeSelectorTerms:

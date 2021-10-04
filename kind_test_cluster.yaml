@@ -5,4 +5,14 @@ apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
   - role: control-plane
   - role: worker
+    extraMounts:
+      - hostPath: /tmp/known_images
+        containerPath: /known_images
+      - hostPath: /tmp/unknown_images
+        containerPath: /unknown_images
   - role: worker
+    extraMounts:
+      - hostPath: /tmp/known_images
+        containerPath: /known_images
+      - hostPath: /tmp/unknown_images
+        containerPath: /unknown_images
