@@ -43,8 +43,8 @@ spec:
           mountPath: /unknown_people
       volumes:
       - name: known-people-storage
-        persistentVolumeClaim:
-          claimName: face-recognition-pvc-known
+        hostPath:
+          path: /known_people 
       - name: unknown-people-storage
-        persistentVolumeClaim:
-          claimName: face-recognition-pvc-unknown
+        hostPath:
+          path: /unknown_people 

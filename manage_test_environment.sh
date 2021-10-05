@@ -33,12 +33,6 @@ create_test_environment() {
   echo -n "Applying face recognition and labelling workers..."
   kubectl label nodes kube-facerecog-test-cluster-worker local-pvc=true
   kubectl label nodes kube-facerecog-test-cluster-worker2 local-pvc=true
-  mkdir -p /tmp/known_people/ /tmp/unknown_people/
-  kubectl apply -f kube_files/face_recognition_pv_known.yaml
-  kubectl apply -f kube_files/face_recognition_pv_unknown.yaml
-  kubectl apply -f kube_files/face_recognition_pvc_known.yaml
-  kubectl apply -f kube_files/face_recognition_pvc_unknown.yaml
-  kubectl apply -f kube_files/face_recognition_pv_known.yaml
   kubectl apply -f kube_files/face_recognition.yaml
   kubectl wait --for=condition=Ready --timeout 60s pod -l app=face-recog
   echo "done."

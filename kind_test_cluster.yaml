@@ -6,13 +6,13 @@ nodes:
   - role: control-plane
   - role: worker
     extraMounts:
-      - hostPath: /tmp/known_images
-        containerPath: /known_images
-      - hostPath: /tmp/unknown_images
-        containerPath: /unknown_images
+      - hostPath: /Users/skarlso/temp/known_people
+        containerPath: /known_people
+      - hostPath: /Users/skarlso/temp/unknown_people
+        containerPath: /unknown_people
   - role: worker
     extraMounts:
-      - hostPath: /tmp/known_images
-        containerPath: /known_images
-      - hostPath: /tmp/unknown_images
-        containerPath: /unknown_images
+      - hostPath: /Users/skarlso/temp/known_people
+        containerPath: /known_people
+      - hostPath: /Users/skarlso/temp/unknown_people
+        containerPath: /unknown_people
