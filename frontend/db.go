@@ -72,7 +72,7 @@ func (dc *DbConnection) loadImages() ([]Image, error) {
 			ID:     imageID,
 			Path:   path,
 			Person: p,
-			Status: Status(status),
+			Status: getStatusFromInt(Status(status)),
 		}
 		images = append(images, i)
 	}

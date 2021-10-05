@@ -145,7 +145,7 @@ Using Kubernetes to deploy sample application into various clusters.
 Create the config map for the database which bootstraps the db.
 
 ```bash
-kubectl create configmap db-bootstrap --from-file=database_setup.sql
+kubectl create configmap db-bootstrap --from-file=dbinit/database_setup.sql
 ```
 
 ## Troubleshooting

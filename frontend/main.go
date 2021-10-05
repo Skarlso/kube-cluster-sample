@@ -29,7 +29,7 @@ type Image struct {
 	ID     int
 	Person Person
 	Path   string
-	Status Status
+	Status string
 }
 
 // Person is a person.
@@ -56,6 +56,18 @@ func view(w http.ResponseWriter, r *http.Request) {
 		Images:    images,
 	}
 	tmpl.Execute(w, data)
+}
+
+func getStatusFromInt(i Status) string {
+	switch i {
+	case PROCESSED:
+		return "Processed"
+	case PENDING:
+		return "Pending"
+	case FAILEDPROCESSING:
+		return "Failed"
+	}
+	return "Unknown"
 }
 
 func main() {

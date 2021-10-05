@@ -6,7 +6,7 @@ create_test_environment() {
   echo "done."
 
   echo -n "Creating the configmap for the database..."
-  kubectl create configmap db-bootstrap --from-file=database_setup.sql
+  kubectl create configmap db-bootstrap --from-file=dbinit/database_setup.sql
   echo "done."
 
   echo -n "Creating secret..."
