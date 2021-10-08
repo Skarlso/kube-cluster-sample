@@ -35,7 +35,6 @@ Twitter: https://twitter.com/Skarlso <br>
 - <uil-jackhammer /> **Architecture** - a bit about the architecture, overview
 - <uil-ship /> **Kubernetes** - deeper into the rabbit hole with Kubernetes
 - <uil-fidget-spinner /> **Distributed Systems** - why is it distributed exactly?
-- <uil-screw /> **GRPC** - where does it come in?
 - <uil-hourglass /> **Demo Time** - anything possible on a webpage
 - <uil-rocket /> **Refactoring Exercise** - show me some code
 
@@ -143,6 +142,10 @@ Who has heard off, knows, is familiar, understands
 - DaemonSet
 - LoadBalancing, certificate manager and LetsEncrypt
 
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/gopher1.png" class="h-29"  alt="viking"/>
+</div>
+
 ---
 
 ## NSQ
@@ -210,9 +213,19 @@ The main question... How is Go helping in all of this?
 
 <img style="position: fixed; top: 0;" src="imgs/kube_architecture.png" class="m-29 h-100"  alt="architecture"/>
 
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/gopher2.png" class="h-29"  alt="viking"/>
+</div>
+
 ---
 
 ## Data flow
+
+Insert a drawing here.
+
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/gopher3.png" class="h-29"  alt="viking"/>
+</div>
 
 ---
 
@@ -233,6 +246,33 @@ There has to be a sync point.
 - Where is the sync point?
 - What level of consistency does it provide?
 - Where are the pain points and possible resource contests?
+
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/gopher4.png" class="h-29"  alt="viking"/>
+</div>
+
+---
+
+# Demo Time
+
+Let's get crackin'!
+
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/SPACEGIRL1.png" class="h-29"  alt="mic"/>
+</div>
+
+---
+
+# Refactoring
+
+- What
+- Why
+- Where
+- How
+
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/gopher5.png" class="h-29"  alt="mic"/>
+</div>
 
 ---
 
