@@ -98,32 +98,25 @@ Who has heard off, knows, is familiar, understands
 
 ## GRPC
 
+<v-clicks>
+
 - Why?
-
-<v-click>
-
-Because of how we interact with the Python FaceRecognition library.
-
-</v-click>
+> Because of how we interact with the Python FaceRecognition library.
 
 - Use Case
-
-<v-click>
-
-Versatile control over the API and strict contracts on how to implement things. 
-
-</v-click>
+> Versatile control over the API and strict contracts on how to implement things. 
 
 - buf.build
-
-<v-click>
-
-GRPC really shines once you implement and use buf.build.
-
-</v-click>
+> GRPC really shines once you implement and use buf.build.
 
 - Benefits
+> Strick contract, easy to use, type safety, etc...
+
 - Drawbacks
+> Rigid structure, having to provide an SDK, more complex to implement from the client side and parse responses
+> without grpc-gateway that provides a JSON based API on top of GRPC.
+
+</v-clicks>
 
 <div class="absolute right-30px bottom-30px">
   <img src="imgs/GopherLink.png" class="h-29"  alt="link"/>
@@ -141,13 +134,25 @@ GRPC really shines once you implement and use buf.build.
 
 ### Let's try to limit this
 
-
+- Deployments vs StatefulSets (hint: we don't care about state)
+- Networks policies
+- Service discovery
+- Secrets and ConfigMaps
+- Persistent Volumes and Claims
+- Resource Limits
+- DaemonSet
+- LoadBalancing, certificate manager and LetsEncrypt
 
 ---
 
 ## NSQ
 
 > A realtime distributed messaging platform
+
+- Versitile
+- Easy to use and set up
+- Works out of the box
+- There are a number of alternatives since then like KubeMQ but NSQ remains strong
 
 <div class="absolute right-30px bottom-30px">
   <img src="imgs/GOPHERCON_ICELAND.png" class="h-29"  alt="iceland"/>
@@ -157,6 +162,17 @@ GRPC really shines once you implement and use buf.build.
 
 ## Go
 
+The main question... How is Go helping in all of this?
+
+<v-clicks>
+
+- Fast
+- Concurrent
+- Easy to write and begin ( started this project almost 4 years ago )
+- Lots of nice libraries and wonderful online documentation
+
+</v-clicks>
+
 <div class="absolute right-30px bottom-30px">
   <img src="imgs/Doctor_Who_Gopher.png" class="h-29"  alt="doctor-who"/>
 </div>
@@ -164,6 +180,16 @@ GRPC really shines once you implement and use buf.build.
 ---
 
 ## Face recognition
+
+- [face-recognition](https://github.com/ageitgey/face_recognition) library in Python
+
+- Why Python?
+
+<v-click>
+
+> The gocv library wasn't as developed back when I wrote this as it is now.
+
+</v-click>
 
 <div class="absolute right-30px bottom-30px">
   <img src="imgs/BATMAN_GOPHER.png" class="h-29"  alt="batman"/>
