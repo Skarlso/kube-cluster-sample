@@ -51,7 +51,7 @@ spec:
       terminationGracePeriodSeconds: 15
       containers:
       - name: receiver
-        image: skarlso/kube-receiver-alpine:1.1.3
+        image: skarlso/kube-receiver-alpine:1.1.4
         ports:
         - containerPort: 8000
           hostPort: 8000
