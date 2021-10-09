@@ -23,6 +23,11 @@ create_test_environment() {
   kubectl wait --for=condition=Ready --timeout 60s pod -l app=nsqlookup
   echo "done."
 
+  echo -n "Applying nsqd.yaml..."
+  kubectl apply -f kube_files/nsqd.yaml
+  kubectl wait --for=condition=Ready --timeout 60s pod -l app=nsqd
+  echo "done."
+
   echo "Applying all services."
 
   echo -n "Applying receiver..."
@@ -30,9 +35,7 @@ create_test_environment() {
   kubectl wait --for=condition=Ready --timeout 60s pod -l app=receiver
   echo "done."
 
-  echo -n "Applying face recognition and labelling workers..."
-  kubectl label nodes kube-facerecog-test-cluster-worker local-pvc=true
-  kubectl label nodes kube-facerecog-test-cluster-worker2 local-pvc=true
+  echo -n "Applying face recognition..."
   kubectl apply -f kube_files/face_recognition.yaml
   kubectl wait --for=condition=Ready --timeout 60s pod -l app=face-recog
   echo "done."

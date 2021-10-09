@@ -38,8 +38,7 @@ func (s *nsqSender) SendImage(i uint64) error {
 	w, _ := nsq.NewProducer(s.config.Address, config) // TODO: WRONG ADDRESS. This should be the producer
 	buffer := make([]byte, 8)
 	binary.LittleEndian.PutUint64(buffer, i)
-	err := w.Publish("images", buffer)
-	if err != nil {
+	if err := w.Publish("images", buffer); err != nil {
 		s.config.Logger.Debug().Err(err).Msg("Failed to publish image id...")
 		return err
 	}

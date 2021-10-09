@@ -10,24 +10,6 @@ spec:
   selector:
     app: receiver
   type: NodePort
-# ---
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: nsqd
-# spec:
-#   ports:
-#   - name: main
-#     protocol: TCP
-#     port: 4150
-#     targetPort: 4150
-#   - name: secondary
-#     protocol: TCP
-#     port: 4151
-#     targetPort: 4151
-#   selector:
-#     app: nsqd
-#   clusterIP: None
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -60,7 +42,7 @@ spec:
           - --db-username-password=$(MYSQL_USERPASSWORD)
           - --db-port=3306
           - --db-dbname=kube
-          # - --producer-address=nsqd.default.svc.cluster.local:4150
+          - --producer-address=nsqd-srv.default.svc.cluster.local:4150
         env:
         - name: MYSQL_USERPASSWORD
           valueFrom:
@@ -74,26 +56,4 @@ spec:
         #   requests:
         #     cpu: "300m"
         #     memory: "1024Mi"
-      # Note, since nsq persists information on disk via .dat file it might be advisable to store those
-      # in a mount.
-      - name: nsqd
-        image: nsqio/nsq
-        ports:
-        - containerPort: 4150
-          hostPort: 4150
-        - containerPort: 4151
-          hostPort: 4151
-        env:
-        - name: NSQLOOKUP_ADDRESS
-          value: nsqlookup.default.svc.cluster.local
-        # - name: NSQ_BROADCAST_ADDRESS
-          # value: nsqd.default.svc.cluster.local
-        command: ["/nsqd"]
-        args: ["--lookupd-tcp-address=$(NSQLOOKUP_ADDRESS):4160"]
-        # resources:
-        #   limits:
-        #     cpu: "500m"
-        #     memory: "1024Mi"
-        #   requests:
-        #     cpu: "300m"
-        #     memory: "1024Mi"
+

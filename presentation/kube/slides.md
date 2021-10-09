@@ -42,7 +42,7 @@ Twitter: https://twitter.com/Skarlso <br>
 <br>
 
 <div class="absolute right-30px bottom-30px">
-  <img src="imgs/Doctor_Who_Gopher_Woman.png" class="h-29"  alt="woman-who"/>
+  <img src="imgs/Doctor_Who_Gopher_Woman.png" class="h-29" alt="woman-who"/>
 </div>
 
 <style>
@@ -66,6 +66,8 @@ Who has heard off, knows, is familiar, understands
 - Distributed Systems
 - NSQ
 - Docker
+
+<img style="position: fixed; top: 0;" src="imgs/the_expert.jpeg" class="m-69 h-50"  alt="the-expert"/>
 
 <div class="absolute right-30px bottom-30px">
   <img src="imgs/GOPHER_VIKING.png" class="h-29"  alt="viking"/>
@@ -133,14 +135,13 @@ Who has heard off, knows, is familiar, understands
 
 ### Let's try to limit this
 
-- Deployments vs StatefulSets (hint: we don't care about state)
-- Networks policies
-- Service discovery
+- Deployments vs StatefulSets
+- Network policies (restrict who can talk to what)
+- Service discovery (eeaassyy)
 - Secrets and ConfigMaps
 - Persistent Volumes and Claims
 - Resource Limits
-- DaemonSet
-- LoadBalancing, certificate manager and LetsEncrypt
+- LoadBalancing, certificate manager and LetsEncrypt (none of that is set up but sounds cool)
 
 <div class="absolute right-30px bottom-30px">
   <img src="imgs/gopher1.png" class="h-29"  alt="viking"/>
@@ -156,6 +157,7 @@ Who has heard off, knows, is familiar, understands
 - Easy to use and set up
 - Works out of the box
 - There are a number of alternatives since then like KubeMQ but NSQ remains strong
+- Distributed setup using nsqd and nsqlookupd
 
 <div class="absolute right-30px bottom-30px">
   <img src="imgs/GOPHERCON_ICELAND.png" class="h-29"  alt="iceland"/>

@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: skarlso/kube-frontend-alpine:1.1.1
+        image: skarlso/kube-frontend-alpine:1.1.2
         imagePullPolicy: Always
         env:
         - name: MYSQL_CONNECTION

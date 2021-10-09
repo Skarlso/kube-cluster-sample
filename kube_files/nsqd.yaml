@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nsqd-srv
+  labels:
+    app: nsqd
+spec:
+  ports:
+  - name: main
+    protocol: TCP
+    port: 4150
+    targetPort: 4150
+  - name: secondary
+    protocol: TCP
+    port: 4151
+    targetPort: 4151
+  selector:
+    app: nsqd
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nsqd
+spec:
+  selector:
+    matchLabels:
+      app: nsqd
+  serviceName: "nsqd-srv"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nsqd
+    spec:
+      containers:
+      - name: nsqd
+        image: nsqio/nsq
+        env:
+        - name: NSQLOOKUP_ADDRESS
+          value: nsqlookup.default.svc.cluster.local
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        command: ["/nsqd"]
+        args: ["--lookupd-tcp-address=$(NSQLOOKUP_ADDRESS):4160", "--broadcast-address=$(HOSTNAME).nsqd-srv"]
+        ports:
+        - containerPort: 4150
+          hostPort: 4150
+        - containerPort: 4151
+          hostPort: 4151
