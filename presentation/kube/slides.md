@@ -144,7 +144,7 @@ Who has heard off, knows, is familiar, understands
 - LoadBalancing, certificate manager and LetsEncrypt (none of that is set up but sounds cool)
 
 <div class="absolute right-30px bottom-30px">
-  <img src="imgs/gopher1.png" class="h-29"  alt="viking"/>
+  <img src="imgs/gopher1.png" class="h-29"  alt="gopher1"/>
 </div>
 
 ---
@@ -216,7 +216,7 @@ The main question... How is Go helping in all of this?
 <img style="position: fixed; top: 0;" src="imgs/kube_architecture.png" class="m-29 h-100"  alt="architecture"/>
 
 <div class="absolute right-30px bottom-30px">
-  <img src="imgs/gopher2.png" class="h-29"  alt="viking"/>
+  <img src="imgs/gopher2.png" class="h-29"  alt="gopher2"/>
 </div>
 
 ---
@@ -226,7 +226,7 @@ The main question... How is Go helping in all of this?
 Insert a drawing here.
 
 <div class="absolute right-30px bottom-30px">
-  <img src="imgs/gopher3.png" class="h-29"  alt="viking"/>
+  <img src="imgs/gopher3.png" class="h-29"  alt="gopher3"/>
 </div>
 
 ---
@@ -250,7 +250,7 @@ There has to be a sync point.
 - Where are the pain points and possible resource contests?
 
 <div class="absolute right-30px bottom-30px">
-  <img src="imgs/gopher4.png" class="h-29"  alt="viking"/>
+  <img src="imgs/gopher4.png" class="h-29"  alt="gopher4"/>
 </div>
 
 ---
@@ -260,7 +260,7 @@ There has to be a sync point.
 Let's get crackin'!
 
 <div class="absolute right-30px bottom-30px">
-  <img src="imgs/SPACEGIRL1.png" class="h-29"  alt="mic"/>
+  <img src="imgs/SPACEGIRL1.png" class="h-29"  alt="spacegirl"/>
 </div>
 
 ---
@@ -273,7 +273,7 @@ Let's get crackin'!
 - How
 
 <div class="absolute right-30px bottom-30px">
-  <img src="imgs/gopher5.png" class="h-29"  alt="mic"/>
+  <img src="imgs/gopher5.png" class="h-29"  alt="gopher5"/>
 </div>
 
 ---
