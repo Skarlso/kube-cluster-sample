@@ -35,6 +35,7 @@ Twitter: https://twitter.com/Skarlso <br>
 - <uil-jackhammer /> **Architecture** - a bit about the architecture, overview
 - <uil-ship /> **Kubernetes** - deeper into the rabbit hole with Kubernetes
 - <uil-fidget-spinner /> **Distributed Systems** - why is it distributed exactly?
+- <uil-spinner /> **User Cases** - what is all of this even useful for?
 - <uil-hourglass /> **Demo Time** - anything possible on a webpage
 - <uil-rocket /> **Refactoring Exercise** - show me some code
 
@@ -51,7 +52,7 @@ h1 {
   background-image: linear-gradient(45deg, #4EC5D4 10%, #146b8c 20%);
   background-size: 100%;
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent; 
+  -webkit-text-fill-color: transparent;
   -moz-text-fill-color: transparent;
 }
 </style>
@@ -153,7 +154,7 @@ Who has heard off, knows, is familiar, understands
 
 > A realtime distributed messaging platform
 
-- Versitile
+- Versatile
 - Easy to use and set up
 - Works out of the box
 - There are a number of alternatives since then like KubeMQ but NSQ remains strong
@@ -255,6 +256,51 @@ There has to be a sync point.
 
 ---
 
+# Use cases
+
+
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/gopher5.png" class="h-29"  alt="gopher5"/>
+</div>
+
+---
+
+## Meeting announcer
+
+
+
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/gopher6.png" class="h-29"  alt="gopher6"/>
+</div>
+
+---
+
+## Dog belly rubbing appointment
+
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/gopher7.png" class="h-29"  alt="gopher7"/>
+</div>
+
+
+---
+
+## Cat feeding time
+
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/gopher8.png" class="h-29"  alt="gopher8"/>
+</div>
+
+
+---
+
+## Mood tracker
+
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/gopher9.png" class="h-29"  alt="gopher9"/>
+</div>
+
+---
+
 # Demo Time
 
 Let's get crackin'!
@@ -273,7 +319,7 @@ Let's get crackin'!
 - How
 
 <div class="absolute right-30px bottom-30px">
-  <img src="imgs/gopher5.png" class="h-29"  alt="gopher5"/>
+  <img src="imgs/gopher10.png" class="h-29"  alt="gopher10"/>
 </div>
 
 ---
