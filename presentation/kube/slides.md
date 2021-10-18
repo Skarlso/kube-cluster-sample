@@ -225,7 +225,17 @@ The main question... How is Go helping in all of this?
 
 ## Data flow
 
-Insert a drawing here.
+<v-clicks>
+
+<img style="position: fixed; top: 0;" src="imgs/flow-00.png" class="m-29 h-100"  alt="flow00"/>
+<img style="position: fixed; top: 0;" src="imgs/flow-01.png" class="m-29 h-100"  alt="flow01"/>
+<img style="position: fixed; top: 0;" src="imgs/flow-02.png" class="m-29 h-100"  alt="flow02"/>
+<img style="position: fixed; top: 0;" src="imgs/flow-03.png" class="m-29 h-100"  alt="flow03"/>
+<img style="position: fixed; top: 0;" src="imgs/flow-04.png" class="m-29 h-100"  alt="flow04"/>
+<img style="position: fixed; top: 0;" src="imgs/flow-05.png" class="m-29 h-100"  alt="flow05"/>
+<img style="position: fixed; top: 0;" src="imgs/flow-06.png" class="m-29 h-100"  alt="flow06"/>
+
+</v-clicks>
 
 <div class="absolute right-30px bottom-30px">
   <img src="imgs/gopher3.png" class="h-29"  alt="gopher3"/>
@@ -238,6 +248,7 @@ Insert a drawing here.
 <div class="absolute right-30px bottom-30px">
   <img src="imgs/GoDZILLA.png" class="h-29"  alt="godzilla"/>
 </div>
+
 ---
 
 Definition of a distributed system:
@@ -258,7 +269,6 @@ There has to be a sync point.
 ---
 
 # Use cases
-
 
 <div class="absolute right-30px bottom-30px">
   <img src="imgs/gopher5.png" class="h-29"  alt="gopher5"/>
@@ -298,6 +308,34 @@ There has to be a sync point.
 
 <div class="absolute right-30px bottom-30px">
   <img src="imgs/gopher9.png" class="h-29"  alt="gopher9"/>
+</div>
+
+---
+
+## Super Simple Architecture
+
+-> Insert Drawing Here
+
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/gopher11.png" class="h-29"  alt="gopher9"/>
+</div>
+
+---
+
+## Real purpose
+
+<v-clicks>
+
+- show off technoloy
+- show off the power of Go
+- learn architecture
+- learn Kubernetes
+- learn more in-depth Go
+
+</v-clicks>
+
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/gopher12.png" class="h-29"  alt="gopher9"/>
 </div>
 
 ---
