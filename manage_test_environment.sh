@@ -54,6 +54,10 @@ create_test_environment() {
   kubectl port-forward deployment/receiver-deployment 8000:8000 &
   echo "done."
 
+  echo -n "Port-Forwarding frontend on 8081..."
+  kubectl port-forward deployment/frontend 8081:8081 &
+  echo "done."
+
   echo "All done. Port-Forward the receiver service to begin testing."
 }
 

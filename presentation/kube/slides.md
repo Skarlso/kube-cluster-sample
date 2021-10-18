@@ -112,7 +112,7 @@ Who has heard off, knows, is familiar, understands
 > GRPC really shines once you implement and use buf.build.
 
 - Benefits
-> Strick contract, easy to use, type safety, etc...
+> Strict contract, easy to use, type safety, etc...
 
 - Drawbacks
 > Rigid structure, having to provide an SDK, more complex to implement from the client side and parse responses
@@ -138,7 +138,7 @@ Who has heard off, knows, is familiar, understands
 
 - Deployments vs StatefulSets
 - Network policies (restrict who can talk to what)
-- Service discovery (eeaassyy)
+- Service discovery
 - Secrets and ConfigMaps
 - Persistent Volumes and Claims
 - Resource Limits
@@ -176,6 +176,7 @@ The main question... How is Go helping in all of this?
 - Concurrent
 - Easy to write and begin ( started this project almost 4 years ago )
 - Lots of nice libraries and wonderful online documentation
+- Circuit breaker ( non-retry, simple blocker )
 
 </v-clicks>
 
