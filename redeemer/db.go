@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"log"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -38,7 +39,11 @@ func (dc *DbConnection) getAllFailedImages() ([]int, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+	defer func() {
+		if err := rows.Close(); err != nil {
+			log.Println("failed to close rows: ", err)
+		}
+	}()
 
 	var ids []int
 	for rows.Next() {

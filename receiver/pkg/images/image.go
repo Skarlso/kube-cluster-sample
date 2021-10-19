@@ -11,7 +11,7 @@ import (
 	"github.com/Skarlso/kube-cluster-sample/receiver/models"
 )
 
-// Db configs here
+// Config db configs here
 type Config struct {
 	Port             string
 	Dbname           string
