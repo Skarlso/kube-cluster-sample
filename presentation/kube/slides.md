@@ -314,7 +314,7 @@ There has to be a sync point.
 
 ## Super Simple Architecture
 
--> Insert Drawing Here
+<img style="position: fixed; top: 0;" src="imgs/simple-design.png" class="m-29 h-100"  alt="flow00"/>
 
 <div class="absolute right-30px bottom-30px">
   <img src="imgs/gopher11.png" class="h-29"  alt="gopher9"/>
