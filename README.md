@@ -179,7 +179,20 @@ kubectl label nodes <your-node-name> local-pvc=true
 
 Create a PV which will describe a volume resource on the cluster. Then create a claim which will claim it for the service.
 
-Both can be found under kube_files called `face_recognition_pv{c}_{un}known.yaml`. 
+Both can be found under kube_files called `face_recognition_pv{c}_{un}known.yaml`.
+
+*Edit*: Unfortunately, using the new way of Kind adding extra mounted in folders,
+the PV/PVC approach no longer works. Thus, extra local folders are mounted in via
+
+```yaml
+    extraMounts:
+      - hostPath: /Users/skarlso/temp/known_people
+        containerPath: /known_people
+      - hostPath: /Users/skarlso/temp/unknown_people
+        containerPath: /unknown_people
+```
+
+into all the workers.
 
 # Slides
 
