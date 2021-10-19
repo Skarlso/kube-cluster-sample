@@ -64,12 +64,24 @@ func TestCallShouldFailAfterXTimesOfFail(t *testing.T) {
 	c.F = func() (*facerecog.IdentifyResponse, error) {
 		return nil, errors.New("test error")
 	}
-	_, err := c.Call()
-	if err != nil {
-		t.Fatal(err)
+	if _, err := c.Call(); err == nil {
+		t.Fatal("error should have been returned")
 	}
 	if !c.On {
 		t.Fatal("should have engaged after one failure. was not on.")
+	}
+	// now try again with a passing call, this should disengage the breaker.
+	c.F = func() (*facerecog.IdentifyResponse, error) {
+		return &facerecog.IdentifyResponse{ImageName: "stuff.png"}, nil
+	}
+	c.Ping = func() bool {
+		return true
+	}
+	if _, err := c.Call(); err != nil {
+		t.Fatal(err)
+	}
+	if c.On {
+		t.Fatal("should have disengaged after successful call. was still on.")
 	}
 }
 

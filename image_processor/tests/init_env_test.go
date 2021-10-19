@@ -47,12 +47,6 @@ func testMain(m *testing.M) int {
 // the cleanup has to be called by the test runner.
 func createTestContainerIfNotCI() (string, func() error, error) {
 	logger := zerolog.New(os.Stderr)
-	if _, ok := os.LookupEnv("CIRCLECI"); ok {
-		logger.Debug().Msg("On circleci, skipping ephemeral container.")
-		// skip circleci environment and do nothing on cleanup.
-		// no-op teardown.
-		return "", func() error { return nil }, nil
-	}
 	pool, err := dockertest.NewPool("")
 	if err != nil {
 		logger.Debug().Err(err).Msg("Failed to create new pool.")
