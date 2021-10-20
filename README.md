@@ -192,7 +192,7 @@ the PV/PVC approach no longer works. Thus, extra local folders are mounted in vi
         containerPath: /unknown_people
 ```
 
-into all the workers.
+...into all the workers.
 
 # Slides
 
