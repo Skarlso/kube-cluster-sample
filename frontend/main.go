@@ -47,6 +47,11 @@ func init() {
 func view(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.ParseFiles("index.html"))
 	db := new(DbConnection)
+	defer func() {
+		if err := db.close(); err != nil {
+			log.Println("failed to close db: ", err)
+		}
+	}()
 	images, err := db.loadImages()
 	if err != nil {
 		log.Fatal(err)
@@ -55,7 +60,7 @@ func view(w http.ResponseWriter, r *http.Request) {
 		PageTitle: "Persons of Interest",
 		Images:    images,
 	}
-	tmpl.Execute(w, data)
+	_ = tmpl.Execute(w, data)
 }
 
 func getStatusFromInt(i Status) string {
