@@ -9,7 +9,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// DbConnection mysql connection. I'm not going to do pooling here.
+// DbConnection mysql connection.
 type DbConnection struct {
 	*sql.DB
 }
@@ -33,7 +33,9 @@ func (dc *DbConnection) open() error {
 
 func (dc *DbConnection) close() error {
 	if dc.DB != nil {
-		dc.DB.Close()
+		if err := dc.DB.Close(); err != nil {
+			log.Println("failed to close db: ", err)
+		}
 	}
 	return errors.New("trying to close a nil connection")
 }
@@ -41,15 +43,18 @@ func (dc *DbConnection) close() error {
 // loadImage gets an image from the database.
 func (dc *DbConnection) loadImages() ([]Image, error) {
 	images := make([]Image, 0)
-	err := dc.open()
-	if err != nil {
+	if err := dc.open(); err != nil {
 		return images, err
 	}
 	rows, err := dc.Query("select id, path, person, status from images")
 	if err != nil {
 		return images, err
 	}
-	defer rows.Close()
+	defer func() {
+		if err := rows.Close(); err != nil {
+			log.Println("failed to close rows: ", err)
+		}
+	}()
 	for rows.Next() {
 		var (
 			imageID int

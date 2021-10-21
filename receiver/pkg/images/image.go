@@ -11,7 +11,7 @@ import (
 	"github.com/Skarlso/kube-cluster-sample/receiver/models"
 )
 
-// Db configs here
+// Config db configs here
 type Config struct {
 	Port             string
 	Dbname           string
@@ -50,7 +50,7 @@ func (i *imageProvider) SaveImage(image *models.Image) (*models.Image, error) {
 		i.config.Logger.Debug().Err(err).Msg("failed to open connection")
 		return nil, err
 	}
-	defer conn.Close()
+	defer i.closeWithLog(conn)
 	result, err := conn.Exec("insert into images (path, person, status) values (?, ?, ?)", image.Path, image.PersonID, image.Status)
 	if err != nil {
 		i.config.Logger.Debug().Err(err).Msg("failed to run insert")
@@ -70,7 +70,7 @@ func (i *imageProvider) LoadImage(id int64) (*models.Image, error) {
 		i.config.Logger.Debug().Err(err).Msg("failed to open connection")
 		return &models.Image{}, err
 	}
-	defer conn.Close()
+	defer i.closeWithLog(conn)
 	var (
 		imageID int
 		path    string
@@ -98,12 +98,24 @@ func (i *imageProvider) SearchPath(path string) (bool, error) {
 		i.config.Logger.Debug().Err(err).Msg("failed to open connection")
 		return false, err
 	}
-	defer conn.Close()
+	defer i.closeWithLog(conn)
 	row, err := conn.Query("select 1 from images where path = ?", path)
 	if err != nil {
 		i.config.Logger.Debug().Err(err).Msg("failed to select from images")
 		return false, err
 	}
-	defer row.Close()
+	defer i.closeWithLog(row)
 	return row.Next(), nil
+}
+
+// Closer defines an entity which can close a connection.
+type Closer interface {
+	Close() error
+}
+
+// closeWithLog closes a connection and logs if it errors but does not interrupt normal flow.
+func (i *imageProvider) closeWithLog(closer Closer) {
+	if err := closer.Close(); err != nil {
+		i.config.Logger.Debug().Err(err).Msg("failed to close connection")
+	}
 }

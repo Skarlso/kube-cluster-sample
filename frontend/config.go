@@ -47,7 +47,7 @@ func initiateEnvironment() {
 		split := strings.Split(line, "=")
 		k, v := split[0], split[1]
 		if _, ok := os.LookupEnv(k); !ok {
-			os.Setenv(k, v)
+			_ = os.Setenv(k, v)
 		}
 	}
 }

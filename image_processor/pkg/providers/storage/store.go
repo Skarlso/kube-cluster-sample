@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log"
 	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -85,6 +86,7 @@ func (m *MySQLStorage) UpdateImage(id int, person int, status models.Status) err
 	return nil
 }
 
+// GetPersonFromImage returns a person from an image url.
 func (m *MySQLStorage) GetPersonFromImage(image string) (*models.Person, error) {
 	var (
 		name string
@@ -111,8 +113,16 @@ func (m *MySQLStorage) execInTx(ctx context.Context, f func(tx *sql.Tx) error) e
 		return fmt.Errorf("failed to create transaction: %w", err)
 	}
 	// Defer a rollback in case anything fails.
-	defer tx.Rollback()
-	defer db.Close()
+	defer func() {
+		if err := tx.Rollback(); err != nil {
+			log.Println("Failed to rollback: ", err)
+		}
+	}()
+	defer func() {
+		if err := db.Close(); err != nil {
+			log.Println("Failed to close database: ", err)
+		}
+	}()
 
 	if err := f(tx); err != nil {
 		return fmt.Errorf("failed to run function in transaction: %w", err)
