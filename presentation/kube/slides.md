@@ -190,11 +190,17 @@ The main question... How is Go helping in all of this?
 
 - [face-recognition](https://github.com/ageitgey/face_recognition) library in Python
 
+> it's processing images in pools of 10
+
 - Why Python?
 
 <v-click>
 
 > The gocv library wasn't as developed back when I wrote this as it is now.
+> Multiple capabilities of the face recognition library such as:
+>   - Realtime face recognition of multiple faces in photos
+>   - Recognize faces on a raspberry pi camera
+>   - And many more...[link](https://github.com/ageitgey/face_recognition#facial-recognition)
 
 </v-click>
 

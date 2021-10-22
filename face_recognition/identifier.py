@@ -13,6 +13,7 @@ import face_pb2_grpc
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
 class Identifer(face_pb2_grpc.IdentifyServicer):
+    # TODO: this should probably be passed in to the pools.
     UnknownEncoding = None
 
     def Identify(self, request, context):
@@ -54,6 +55,7 @@ class Identifer(face_pb2_grpc.IdentifyServicer):
 
     def image_chunk(self, images, n):
         """Yield successive n-sized chunks from l."""
+        # TODO: this appears to be unused.
         return [images[i:i + n] for i in range(0, len(images), n)]
 
 
