@@ -16,6 +16,8 @@ const (
 	PROCESSED
 	// FAILEDPROCESSING -- for whatever reason the processing failed and this image is flagged for a retry
 	FAILEDPROCESSING
+	// PROCESSING -- used to "claim" an image by an instance and mark as being processed by face-recog
+	PROCESSING
 )
 
 // PageData returns the images that we would like to display.
@@ -71,6 +73,8 @@ func getStatusFromInt(i Status) string {
 		return "Pending"
 	case FAILEDPROCESSING:
 		return "Failed"
+	case PROCESSING:
+		return "Processing"
 	}
 	return "Unknown"
 }

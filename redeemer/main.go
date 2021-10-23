@@ -11,9 +11,11 @@ const (
 	// PENDING -- not yet send to face recognition service
 	_ Status = iota
 	// PROCESSED -- processed by face recognition service; even if no person was found for the image
-	_
+	PROCESSED
 	// FAILEDPROCESSING -- for whatever reason the processing failed and this image is flagged for a retry
 	FAILEDPROCESSING
+	// PROCESSING -- used to "claim" an image by an instance and mark as being processed by face-recog
+	PROCESSING
 )
 
 func init() {
@@ -29,7 +31,7 @@ func main() {
 	if err := db.open(); err != nil {
 		log.Fatal("unable to make db connection: ", err)
 	}
-	ids, err := db.getAllFailedImages()
+	ids, err := db.getAllNonProcessedImages()
 	if err != nil {
 		log.Fatal("unable to get all failed images: ", err)
 	}

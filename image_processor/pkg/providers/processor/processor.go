@@ -90,6 +90,10 @@ func (p *Processor) processImage(i int) {
 		// log the error then continue
 		return
 	}
+	if err := p.Storer.UpdateImage(i, -1, models.PROCESSING); err != nil {
+		p.Logger.Error().Err(err).Msg("Failed to mark the image as being processed...")
+		return
+	}
 	p.CircuitBreaker.SetCallF(func() (*facerecog.IdentifyResponse, error) {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 		defer cancel()

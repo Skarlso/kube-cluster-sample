@@ -30,12 +30,13 @@ func (dc *DbConnection) open() error {
 	return db.Ping()
 }
 
-func (dc *DbConnection) getAllFailedImages() ([]int, error) {
+func (dc *DbConnection) getAllNonProcessedImages() ([]int, error) {
 	err := dc.open()
 	if err != nil {
 		return nil, err
 	}
-	rows, err := dc.Query("select id from images where status = ?", FAILEDPROCESSING)
+	// pick everything up that hasn't been processed.
+	rows, err := dc.Query("select id from images where status != ?", PROCESSED)
 	if err != nil {
 		return nil, err
 	}
