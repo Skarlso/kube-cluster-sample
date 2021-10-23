@@ -50,6 +50,7 @@ func TestProcessImageSuccessfully(t *testing.T) {
 		ID:   1,
 		Name: "Hannibal",
 	}, nil)
+	fakeStorer.UpdateImageReturns(nil)
 	fakeIdentity := &mockIdentify{
 		resp: &facerecog.IdentifyResponse{
 			ImageName: "hannibal.jpg",
@@ -86,7 +87,7 @@ func TestProcessImageSuccessfully(t *testing.T) {
 		assert.Equal(t, 1, imageArg)
 		personArg := fakeStorer.GetPersonFromImageArgsForCall(0)
 		assert.Equal(t, "hannibal.jpg", personArg)
-		imageId, personId, status := fakeStorer.UpdateImageArgsForCall(0)
+		imageId, personId, status := fakeStorer.UpdateImageArgsForCall(1)
 		assert.Equal(t, 1, imageId)
 		assert.Equal(t, 1, personId)
 		assert.Equal(t, models.PROCESSED, status)
@@ -181,6 +182,7 @@ func TestProcessImageFailedToCallIdentityServiceCallsPing(t *testing.T) {
 		ID:   1,
 		Name: "Hannibal",
 	}, nil)
+	fakeStorer.UpdateImageReturns(nil)
 	fakeIdentity := &mockIdentify{
 		err: errors.New("nope"),
 	}
@@ -213,7 +215,7 @@ func TestProcessImageFailedToCallIdentityServiceCallsPing(t *testing.T) {
 		}
 		imageArg := fakeStorer.GetImageArgsForCall(0)
 		assert.Equal(t, 1, imageArg)
-		imageId, personId, status := fakeStorer.UpdateImageArgsForCall(0)
+		imageId, personId, status := fakeStorer.UpdateImageArgsForCall(1)
 		assert.Equal(t, 1, imageId)
 		assert.Equal(t, -1, personId)
 		assert.Equal(t, models.FAILEDPROCESSING, status)
@@ -233,6 +235,7 @@ func TestProcessImageImageNameNotFound(t *testing.T) {
 		ID:   1,
 		Name: "Hannibal",
 	}, nil)
+	fakeStorer.UpdateImageReturns(nil)
 	fakeIdentity := &mockIdentify{
 		resp: &facerecog.IdentifyResponse{
 			ImageName: "not_found",
@@ -267,7 +270,7 @@ func TestProcessImageImageNameNotFound(t *testing.T) {
 		}
 		imageArg := fakeStorer.GetImageArgsForCall(0)
 		assert.Equal(t, 1, imageArg)
-		imageId, personId, status := fakeStorer.UpdateImageArgsForCall(0)
+		imageId, personId, status := fakeStorer.UpdateImageArgsForCall(1)
 		assert.Equal(t, 1, imageId)
 		assert.Equal(t, -1, personId)
 		assert.Equal(t, models.FAILEDPROCESSING, status)
@@ -284,6 +287,7 @@ func TestProcessImagePersonNotFound(t *testing.T) {
 		Status: models.PENDING,
 	}, nil)
 	fakeStorer.GetPersonFromImageReturns(nil, errors.New("nope"))
+	fakeStorer.UpdateImageReturns(nil)
 	fakeIdentity := &mockIdentify{
 		resp: &facerecog.IdentifyResponse{
 			ImageName: "hannibal1.jpg",
@@ -318,7 +322,7 @@ func TestProcessImagePersonNotFound(t *testing.T) {
 		}
 		imageArg := fakeStorer.GetImageArgsForCall(0)
 		assert.Equal(t, 1, imageArg)
-		assert.Equal(t, 0, fakeStorer.UpdateImageCallCount())
+		assert.Equal(t, 1, fakeStorer.UpdateImageCallCount())
 		return true
 	}, 5*time.Second, 10*time.Millisecond)
 }
@@ -335,7 +339,7 @@ func TestProcessImageFailedToUpdateImage(t *testing.T) {
 		ID:   1,
 		Name: "Hannibal",
 	}, nil)
-	fakeStorer.UpdateImageReturns(errors.New("nope"))
+	fakeStorer.UpdateImageReturnsOnCall(1, errors.New("nope"))
 	fakeIdentity := &mockIdentify{
 		resp: &facerecog.IdentifyResponse{
 			ImageName: "hannibal.jpg",
@@ -373,7 +377,7 @@ func TestProcessImageFailedToUpdateImage(t *testing.T) {
 		assert.Equal(t, 1, imageArg)
 		personArg := fakeStorer.GetPersonFromImageArgsForCall(0)
 		assert.Equal(t, "hannibal.jpg", personArg)
-		imageId, personId, status := fakeStorer.UpdateImageArgsForCall(0)
+		imageId, personId, status := fakeStorer.UpdateImageArgsForCall(1)
 		assert.Equal(t, 1, imageId)
 		assert.Equal(t, 1, personId)
 		assert.Equal(t, models.PROCESSED, status)
