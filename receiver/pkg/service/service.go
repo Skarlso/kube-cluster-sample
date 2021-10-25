@@ -62,19 +62,20 @@ func (s *receiver) postImage(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "got error while decoding body: %s", err)
 		return
 	}
+	defer r.Body.Close()
 	fmt.Fprintf(w, "got path: %+v\n", p)
-	var ps Paths
-	paths := make([]Path, 0)
-	paths = append(paths, p)
-	ps.Paths = paths
+	ps := Paths{
+		Paths: []Path{p},
+	}
 	var pathsJSON bytes.Buffer
 	if err := json.NewEncoder(&pathsJSON).Encode(ps); err != nil {
 		fmt.Fprintf(w, "failed to encode paths: %s", err)
 		return
 	}
-	r.Body = ioutil.NopCloser(&pathsJSON)
-	r.ContentLength = int64(pathsJSON.Len())
-	s.postImages(w, r)
+	clone := r.Clone(context.Background())
+	clone.Body = ioutil.NopCloser(&pathsJSON)
+	clone.ContentLength = int64(pathsJSON.Len())
+	s.postImages(w, clone)
 }
 
 // PostImages handles a post of multiple images.
@@ -85,6 +86,7 @@ func (s *receiver) postImages(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "got error while decoding request body: %s", err)
 		return
 	}
+	defer r.Body.Close()
 	fmt.Fprintf(w, "got paths: %+v\n", p)
 	for _, path := range p.Paths {
 		image := models.Image{

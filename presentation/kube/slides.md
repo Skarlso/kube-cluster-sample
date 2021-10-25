@@ -112,11 +112,11 @@ Who has heard off, knows, is familiar, understands
 > GRPC really shines once you implement and use buf.build.
 
 - Benefits
-> Strict contract, easy to use, type safety, etc...
+> Strict contract, easy to use, type safety, discoverability ( more visible than a JSON API which doesn't have a SWAGGER doc ).
 
 - Drawbacks
 > Rigid structure, having to provide an SDK, more complex to implement from the client side and parse responses
-> without grpc-gateway that provides a JSON based API on top of GRPC.
+> without grpc-gateway that provides a JSON based API on top of GRPC. Although this is arguable.
 
 </v-clicks>
 
@@ -188,7 +188,7 @@ The main question... How is Go helping in all of this?
 
 ## Face recognition
 
-- [face-recognition](https://github.com/ageitgey/face_recognition) library in Python
+- [face-recognition](https://github.com/ageitgey/face_recognition) library in Python (SORRY)
 
 > it's processing images in pools of 10
 
@@ -201,6 +201,7 @@ The main question... How is Go helping in all of this?
 >   - Realtime face recognition of multiple faces in photos
 >   - Recognize faces on a raspberry pi camera
 >   - And many more...[link](https://github.com/ageitgey/face_recognition#facial-recognition)
+> GoCV doesn't provide face recognition. It provides face detection.
 
 </v-click>
 
@@ -261,12 +262,16 @@ Definition of a distributed system:
 
 > Multiple "something" ... linked together through the network to appear as one.
 
-There has to be a sync point.
+There has to be a sync point unless you don't have shared state.
 
 - How distributed is it?
 - Where is the sync point?
+- Transactions...
 - What level of consistency does it provide?
 - Where are the pain points and possible resource contests?
+- Concurrent state management
+- Sync methods, quorum, raft, etc...
+- Sharding with PlanetScale, AWS Aurora, GCP Cloud Database
 
 <div class="absolute right-30px bottom-30px">
   <img src="imgs/gopher4.png" class="h-29"  alt="gopher4"/>

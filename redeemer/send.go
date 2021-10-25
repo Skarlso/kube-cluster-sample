@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/binary"
+	"fmt"
 
 	nsq "github.com/nsqio/go-nsq"
 )
@@ -14,7 +15,7 @@ func sendImage(i int) error {
 	binary.LittleEndian.PutUint32(buffer, uint32(i))
 	err := w.Publish("images", buffer)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to publish image: %w", err)
 	}
 
 	w.Stop()

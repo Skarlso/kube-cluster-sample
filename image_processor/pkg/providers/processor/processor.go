@@ -64,6 +64,13 @@ func (p *Processor) updateImageWithPerson(personID, imageID int) error {
 // ProcessImages takes a channel for input and waits on that channel for processable items.
 // This channel must never be closed.
 func (p *Processor) ProcessImages(ctx context.Context, in chan int) {
+	// Setup ping for the circuitbreaker.
+	p.CircuitBreaker.SetPingF(func() bool {
+		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+		defer cancel()
+		_, err := p.HealthCheckClient.HealthCheck(ctx, &facerecog.Empty{})
+		return err != nil
+	})
 	// continuously get ids for image processing, block until something is received.
 	for {
 		select {
@@ -76,6 +83,9 @@ func (p *Processor) ProcessImages(ctx context.Context, in chan int) {
 	}
 }
 
+// processImage will not retry processing a failed image or when the CircuitBreaker trips.
+// It will just move on to the next image and mark that image failed in the Database.
+// Further actions are taken on failed images once the Redeemer makrs the image Pending again.
 func (p *Processor) processImage(i int) {
 	p.Logger.Info().Int("image-id", i).Msg("Processing image...")
 
@@ -86,8 +96,7 @@ func (p *Processor) processImage(i int) {
 		return
 	}
 	if image.Status != models.PENDING {
-		p.Logger.Error().Err(err).Int("image-id", i).Msg("image has already been processed")
-		// log the error then continue
+		p.Logger.Debug().Int("image-id", i).Msg("image has already been processed")
 		return
 	}
 	if err := p.Storer.UpdateImage(i, -1, models.PROCESSING); err != nil {
@@ -101,13 +110,6 @@ func (p *Processor) processImage(i int) {
 			ImagePath: image.Path,
 		})
 		return r, err
-	})
-
-	p.CircuitBreaker.SetPingF(func() bool {
-		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-		defer cancel()
-		_, err := p.HealthCheckClient.HealthCheck(ctx, &facerecog.Empty{})
-		return err != nil
 	})
 	r, err := p.CircuitBreaker.Call()
 	if err != nil {

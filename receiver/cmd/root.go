@@ -40,6 +40,7 @@ func main() {
 	srvc := service.New(rootArgs.service, service.Dependencies{
 		ImageProvider: imgProvider,
 		SendProvider:  senderProvider,
+		Logger:        logger,
 	})
 
 	if err := srvc.Run(context.Background()); err != nil {

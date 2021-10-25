@@ -194,6 +194,8 @@ the PV/PVC approach no longer works. Thus, extra local folders are mounted in vi
 
 ...into all the workers.
 
+To create a test environment simply execute `manage_test_environment.sh`.
+
 # Slides
 
 Slides is using [slidev](https://sli.dev).

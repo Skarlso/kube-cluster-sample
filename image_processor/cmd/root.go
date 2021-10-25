@@ -17,7 +17,6 @@ import (
 
 var (
 	rootArgs struct {
-		service         service.Config
 		consumerConfig  consumer.Config
 		processorConfig processor.Config
 		dbConfig        storage.Config
@@ -50,7 +49,7 @@ func main() {
 
 	cons := consumer.NewConsumer(rootArgs.consumerConfig, consumer.Dependencies{Logger: logger})
 
-	srvc := service.New(rootArgs.service, service.Dependencies{
+	srvc := service.New(service.Dependencies{
 		Processor: proc,
 		Consumer:  cons,
 		Logger:    logger,

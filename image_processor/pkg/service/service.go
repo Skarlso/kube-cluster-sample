@@ -8,10 +8,6 @@ import (
 	"github.com/Skarlso/kube-cluster-sample/image_processor/pkg/providers"
 )
 
-// Config is everything that this service needs to work.
-type Config struct {
-}
-
 // Dependencies are providers which this service operates with.
 type Dependencies struct {
 	Consumer  providers.ConsumerProvider
@@ -25,17 +21,15 @@ type Service interface {
 }
 
 // New creates a new service with all of its dependencies and configurations.
-func New(cfg Config, deps Dependencies) Service {
+func New(deps Dependencies) Service {
 	return &imageProcessor{
-		deps:   deps,
-		config: cfg,
+		deps: deps,
 	}
 }
 
 // Service represents the service object of the receiver.
 type imageProcessor struct {
-	config Config
-	deps   Dependencies
+	deps Dependencies
 }
 
 // Run starts the this service.
