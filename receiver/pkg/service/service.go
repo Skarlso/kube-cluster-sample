@@ -62,7 +62,11 @@ func (s *receiver) postImage(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "got error while decoding body: %s", err)
 		return
 	}
-	defer r.Body.Close()
+	defer func() {
+		if err := r.Body.Close(); err != nil {
+			log.Println("failed to close body: ", err)
+		}
+	}()
 	fmt.Fprintf(w, "got path: %+v\n", p)
 	ps := Paths{
 		Paths: []Path{p},
@@ -86,7 +90,11 @@ func (s *receiver) postImages(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "got error while decoding request body: %s", err)
 		return
 	}
-	defer r.Body.Close()
+	defer func() {
+		if err := r.Body.Close(); err != nil {
+			log.Println("failed to close body: ", err)
+		}
+	}()
 	fmt.Fprintf(w, "got paths: %+v\n", p)
 	for _, path := range p.Paths {
 		image := models.Image{
