@@ -66,7 +66,6 @@ Who has heard off, knows, is familiar, understands
 - GRPC
 - Distributed Systems
 - NSQ
-- Docker
 
 <img style="position: fixed; top: 0;" src="imgs/the_expert.jpeg" class="m-69 h-50"  alt="the-expert"/>
 
@@ -90,6 +89,22 @@ Who has heard off, knows, is familiar, understands
 
 ---
 
+# Why?
+
+<v-click>
+
+For the glory of Sontaran empire.
+
+<img style="position: fixed; top: 0;" src="imgs/sontaran.jpeg" class="m-40 h-85"  alt="the-expert"/>
+
+</v-click>
+
+<div class="absolute right-30px bottom-30px">
+  <img src="imgs/Doctor_Who_Gopher.png" class="h-29"  alt="doctor-who"/>
+</div>
+
+---
+
 # Technologies
 
 <div class="absolute right-30px bottom-30px">
@@ -103,20 +118,17 @@ Who has heard off, knows, is familiar, understands
 <v-clicks>
 
 - Why?
-> Because of how we interact with the Python FaceRecognition library.
-
-- Use Case
-> Versatile control over the API and strict contracts on how to implement things. 
-
-- buf.build
-> GRPC really shines once you implement and use buf.build.
-
-- Benefits
 > Strict contract, easy to use, type safety, discoverability ( more visible than a JSON API which doesn't have a SWAGGER doc ).
 
+- Use Case
+> Versatile control over the API and strict contracts on how to implement things.
+
+- buf.build
+> protobuf really shines once you implement and use buf.build with re-usable protobuf modules.
+
 - Drawbacks
-> Rigid structure, having to provide an SDK, more complex to implement from the client side and parse responses
-> without grpc-gateway that provides a JSON based API on top of GRPC. Although this is arguable.
+> Rigid structure, having to provide an SDK, more overhead to implement from the client side ( for dynamic languages having to
+> use GRPC generated code instead of putting the JSON payload into a dict or a map ).
 
 </v-clicks>
 
@@ -143,6 +155,7 @@ Who has heard off, knows, is familiar, understands
 - Persistent Volumes and Claims
 - Resource Limits
 - LoadBalancing, certificate manager and LetsEncrypt (none of that is set up but sounds cool)
+- Readiness and Liveness probes
 
 <div class="absolute right-30px bottom-30px">
   <img src="imgs/gopher1.png" class="h-29"  alt="gopher1"/>
@@ -152,13 +165,13 @@ Who has heard off, knows, is familiar, understands
 
 ## NSQ
 
-> A realtime distributed messaging platform
+> A realtime distributed messaging processing at scale.
 
 - Versatile
 - Easy to use and set up
 - Works out of the box
 - There are a number of alternatives since then like KubeMQ but NSQ remains strong
-- Distributed setup using nsqd and nsqlookupd
+- Distributed setup using nsqd and nsqlookupd is amazing and uses little resources
 
 <div class="absolute right-30px bottom-30px">
   <img src="imgs/GOPHERCON_ICELAND.png" class="h-29"  alt="iceland"/>
@@ -173,15 +186,15 @@ The main question... How is Go helping in all of this?
 <v-clicks>
 
 - Fast
-- Concurrent
-- Easy to write and begin ( started this project almost 4 years ago )
-- Lots of nice libraries and wonderful online documentation
+- Easy concurrency
+- Easy to write and begin ( started this project more than 4 years ago )
+- Lots of nice libraries and wonderful online documentation partially enforced by the linter ( therefore community standard )
 - Circuit breaker ( non-retry, simple blocker )
 
 </v-clicks>
 
 <div class="absolute right-30px bottom-30px">
-  <img src="imgs/Doctor_Who_Gopher.png" class="h-29"  alt="doctor-who"/>
+  <img src="imgs/GIRL_GOPHER.png" class="h-29"  alt="doctor-who"/>
 </div>
 
 ---
@@ -197,11 +210,11 @@ The main question... How is Go helping in all of this?
 <v-click>
 
 > The gocv library wasn't as developed back when I wrote this as it is now.
+> GoCV doesn't provide face recognition. It provides face detection.
 > Multiple capabilities of the face recognition library such as:
 >   - Realtime face recognition of multiple faces in photos
 >   - Recognize faces on a raspberry pi camera
 >   - And many more...[link](https://github.com/ageitgey/face_recognition#facial-recognition)
-> GoCV doesn't provide face recognition. It provides face detection.
 
 </v-click>
 
