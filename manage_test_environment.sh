@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 create_test_environment() {
   echo -n "Beginning to deploy test environment to Kind cluster..."
